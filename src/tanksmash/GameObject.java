@@ -1,9 +1,6 @@
 
 package tanksmash;
 
-/*
- * @author Irfad Hussain
- */
 public class GameObject {
     
     private int x;

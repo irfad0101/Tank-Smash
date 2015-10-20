@@ -3,9 +3,6 @@ package tanksmash;
 
 import java.awt.image.BufferedImage;
 
-/*
- * @author Irfad Hussain
- */
 public class Brick extends GameObject{
     
     private static BufferedImage brick0;
