@@ -5,11 +5,61 @@
  */
 package tanksmash;
 
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Irfad Hussain
  */
 public class GameWindow extends javax.swing.JFrame {
+    
+    private class CustomDispathcher implements KeyEventDispatcher{
+
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+            if (e.getID()==KeyEvent.KEY_PRESSED){
+            String message = null;
+            switch(e.getKeyCode()){
+                case KeyEvent.VK_UP:
+                    message = Command.UP; break;
+                case KeyEvent.VK_RIGHT:
+                    message = Command.RIGHT; break;
+                case KeyEvent.VK_DOWN:
+                    message = Command.DOWN; break;
+                case KeyEvent.VK_LEFT:
+                    message = Command.LEFT; break;
+                case KeyEvent.VK_SPACE:
+                    message = Command.SHOOT; break;
+            }
+            //final String m = message;
+            if (message!=null){
+                try {
+                    /*new Thread(){
+                        public void run(){
+                            try {
+                                NetworkHandler.send(ip, 6000, m);
+                            } catch (IOException ex) {
+                                Logger.getLogger(GameWindow.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }.start();*/
+                    NetworkHandler.send(ip, port, message);
+                } catch (IOException ex) {
+                    System.out.println("Commmand "+message+" not sent");
+                }
+            }
+            }
+            return false;
+        }
+        
+    }
+    
+    private String ip;
+    private int port;
 
     /**
      * Creates new form GameWindow
@@ -17,6 +67,8 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow() {
         initComponents();
         btnJoinGame.requestFocus();
+        KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        keyManager.addKeyEventDispatcher(new CustomDispathcher());
     }
 
     /**
@@ -42,6 +94,7 @@ public class GameWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tank Smash");
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -184,7 +237,20 @@ public class GameWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnJoinGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJoinGameActionPerformed
-        // TODO add your handling code here:
+        try {
+            this.ip = txtIP.getText();
+            this.port = Integer.parseInt(txtPort.getText());
+            txtIP.setEnabled(false);
+            txtPort.setEnabled(false);
+            btnJoinGame.setEnabled(false);
+            NetworkHandler.send(this.ip, this.port, Command.JOIN);
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println("JOIN#:Network Error");
+            JOptionPane.showMessageDialog(this, "Cannot conncet to server. Check IP Address, Port, network connection and try again.", "Network Error", JOptionPane.ERROR_MESSAGE);
+            txtIP.setEnabled(true);
+            txtPort.setEnabled(true);
+            btnJoinGame.setEnabled(true);
+        }
     }//GEN-LAST:event_btnJoinGameActionPerformed
 
     /**

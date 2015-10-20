@@ -21,7 +21,9 @@ public class TankSmash {
             System.out.println("Exception while setting Look and Feel");
         }
         GameWindow gw = new GameWindow();
+        gw.setLocationRelativeTo(null);
         gw.setVisible(true);
+        (new Thread(new NetworkHandler(7000, gw))).start();
     }
     
 }
