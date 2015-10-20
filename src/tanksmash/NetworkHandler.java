@@ -43,7 +43,7 @@ public class NetworkHandler implements Runnable {
                 /*new Thread(){
                     
                 }.start();*/
-                game.decode(reply);//should implement decode method
+                //game.decode(reply);//should implement decode method
             } catch (IOException ex) {
                 Logger.getLogger(NetworkHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
