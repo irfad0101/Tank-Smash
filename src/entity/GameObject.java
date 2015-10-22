@@ -1,5 +1,5 @@
 
-package tanksmash;
+package entity;
 
 public class GameObject {
     

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package tanksmash;
 
 import java.awt.KeyEventDispatcher;
@@ -11,10 +7,6 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Irfad Hussain
- */
 public class GameWindow extends javax.swing.JFrame {
     
     private class CustomDispathcher implements KeyEventDispatcher{

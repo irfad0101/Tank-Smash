@@ -1,5 +1,5 @@
 
-package tanksmash;
+package entity;
 
 import java.awt.image.BufferedImage;
 
