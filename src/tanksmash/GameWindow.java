@@ -53,6 +53,7 @@ public class GameWindow extends javax.swing.JFrame {
     private String ip;
     private int port;
     private MapDisplayUnit[][] mapDisplay;
+    private GameEngine gameEngine;
     
     /**
      * Creates new form GameWindow
@@ -70,6 +71,11 @@ public class GameWindow extends javax.swing.JFrame {
                 pnlMap.add(mapDisplay[i][j]);
             }
         }
+        gameEngine = new GameEngine(this, mapDisplay);
+    }
+    
+    public GameEngine getGameEngine(){
+        return gameEngine;
     }
 
     /**
@@ -94,6 +100,8 @@ public class GameWindow extends javax.swing.JFrame {
         tblScore = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Tank Smash");
+        setResizable(false);
 
         pnlMap.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -253,6 +261,10 @@ public class GameWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnJoinGameActionPerformed
 
+    public void showStatus(String status){
+        lblStatus.setText(status);
+    }
+    
     /**
      * @param args the command line arguments
      */

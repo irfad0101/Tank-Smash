@@ -1,7 +1,9 @@
 
 package entity;
 
-public class GameObject {
+import java.awt.image.BufferedImage;
+
+public abstract class GameObject {
     
     private int x;
     private int y;
@@ -10,6 +12,8 @@ public class GameObject {
         this.x = x;
         this.y = y;
     }
+    
+    public abstract BufferedImage getImage();
 
     public int getX() {
         return x;

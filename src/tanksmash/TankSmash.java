@@ -23,7 +23,7 @@ public class TankSmash {
         GameWindow gw = new GameWindow();
         gw.setLocationRelativeTo(null);
         gw.setVisible(true);
-        (new Thread(new NetworkHandler(7000, gw))).start();
+        (new Thread(new NetworkHandler(7000, gw.getGameEngine()))).start();
     }
     
 }

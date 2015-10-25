@@ -33,6 +33,6 @@ public class Command {
     public static final String FELLTOPIT = "PITFALL#";
     public static final String DEAD = "DEAD#";
     public static final String REQUESTERROR = "REQUEST_ERROR#";
-    public static final String SEVERERROR = "REQUEST_ERROR#";
+    public static final String SERVERERROR = "SERVER_ERROR#";
 
 }

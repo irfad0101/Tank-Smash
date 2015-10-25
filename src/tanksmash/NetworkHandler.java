@@ -25,11 +25,11 @@ public class NetworkHandler implements Runnable {
     
     private ServerSocket server;
     private int port;
-    private GameWindow game;
+    private GameEngine gameEngine;
     
-    public NetworkHandler(int port, GameWindow game){
+    public NetworkHandler(int port, GameEngine gameEngine){
         this.port = port;
-        this.game = game;
+        this.gameEngine = gameEngine;
     }
     
     private void recieve(){
@@ -40,17 +40,19 @@ public class NetworkHandler implements Runnable {
                 String reply = in.readLine();
                 System.out.println(reply);
                 socket.close();
-                /*new Thread(){
-                    
-                }.start();*/
-                //game.decode(reply);//should implement decode method
+                new Thread(){
+                    @Override
+                    public void run(){
+                        gameEngine.decode(reply);
+                    }
+                }.start();
             } catch (IOException ex) {
-                Logger.getLogger(NetworkHandler.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("IOException in reciever");
             }
         }
     }
 
-    public static void send(String ipAddress, int port, String message) throws IOException{
+    public static synchronized void send(String ipAddress, int port, String message) throws IOException{
             Socket socket = new Socket(ipAddress, port);
             DataOutputStream d = new DataOutputStream(socket.getOutputStream());
             d.writeBytes(message);
