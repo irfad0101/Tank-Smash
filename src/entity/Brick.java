@@ -50,5 +50,9 @@ public class Brick extends GameObject{
                 return null;
         }
     }
+
+    public void setDamageLevel(int damageLevel) {
+        this.damageLevel = damageLevel;
+    }
     
 }

@@ -79,6 +79,11 @@ public class GameEngine {
             case Command.DEAD:
                 gameWindow.showStatus("You tank is smashed");
                 break;
+            case Command.JUSTFININSHED:
+                gameWindow.showStatus("Game Over");
+                break;
+            case Command.FELLTOPIT:
+                gameWindow.showStatus("Your tank fell into pit and smashed");
             default:
                 // handle commands that need some string manupilation
                 if (message.startsWith(Command.OBSTACLE)){
@@ -92,17 +97,21 @@ public class GameEngine {
                 else if(message.startsWith("S")){
                     /* similar to aboves condition, message that starts with S have player location and indicate game has begun. remoove unnecessary
                        parts of message and send to process*/
+                    gameWindow.showStatus("");
                     loadTanks(message.substring(2, message.length()-1));
                 }
                 else if (message.startsWith("L")) {
                     // process life pack information
+                    gameWindow.showStatus("");
                     handleLifePack(message.substring(2, message.length() - 1));
                     
                 } else if (message.startsWith("C")) {
+                    gameWindow.showStatus("");
                     handleCoinPack(message.substring(2, message.length() - 1));
                 }
                 else if(message.startsWith("G")){
-                
+                    gameWindow.showStatus("");
+                    updateMapDisplay(message.substring(2, message.length()-1));
                 }
         }
     }
@@ -218,6 +227,27 @@ public class GameEngine {
                 }
             }
         }.start();
+    }
+    
+    private void updateMapDisplay(String details){
+        String[] mapUpdate = details.split(":");
+        for (int i=0; i<mapUpdate.length-1;i++){
+            String[] playerDetails = mapUpdate[i].split("[;,]");
+            Tank tank = tankList.get(i);
+            mapDisplay[tank.getX()][tank.getY()].setGameObject(null);
+            mapDisplay[tank.getX()][tank.getY()].draw();
+            tank.setX(Integer.parseInt(playerDetails[1]));
+            tank.setY(Integer.parseInt(playerDetails[2]));
+            tank.setDirection(Integer.parseInt(playerDetails[3]));
+            mapDisplay[tank.getX()][tank.getY()].setGameObject(tank);
+            mapDisplay[tank.getX()][tank.getY()].draw();
+        }
+        String[] brickDetails = mapUpdate[mapUpdate.length - 1].split("[;,]");
+        for (int i = 0; i < brickDetails.length; i += 3) {
+            Brick brick = brickList.get(i/3);
+            brick.setDamageLevel(Integer.parseInt(brickDetails[i+2]));
+            mapDisplay[brick.getX()][brick.getY()].draw();
+        }
     }
     
     public boolean isGameStarted(){
