@@ -50,8 +50,8 @@ public class GameWindow extends javax.swing.JFrame {
         
     }
     
-    private String ip;
-    private int port;
+    private String ip = "127.0.0.1";
+    private int port = 6000;
     private MapDisplayUnit[][] mapDisplay;
     private GameEngine gameEngine;
     
@@ -248,8 +248,7 @@ public class GameWindow extends javax.swing.JFrame {
             this.port = Integer.parseInt(txtPort.getText());
             txtIP.setEnabled(false);
             txtPort.setEnabled(false);
-            btnJoinGame.setEnabled(false);
-            lblStatus.setText("Sending request...");
+            //btnJoinGame.setEnabled(false);
             NetworkHandler.send(this.ip, this.port, Command.JOIN);
         } catch (IOException | NumberFormatException ex) {
             System.out.println("JOIN#:Network Error");

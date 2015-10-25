@@ -4,7 +4,8 @@ package tanksmash;
 import entity.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class GameEngine {
@@ -84,16 +85,21 @@ public class GameEngine {
                     gameWindow.showStatus("You hit an obstacle. Penalty: "+message.substring(9, message.length()-1));
                 }
                 else if (message.startsWith("I")){
+                    /* if message starts with I it contain map data. remove "I:" and "#" from message and call initializeMap to process message
+                       though there are other messages startswith I, they will be checked in above switch cases  */
                     initializeMap(message.substring(2, message.length()-1));
                 }
                 else if(message.startsWith("S")){
-                
+                    /* similar to aboves condition, message that starts with S have player location and indicate game has begun. remoove unnecessary
+                       parts of message and send to process*/
+                    loadTanks(message.substring(2, message.length()-1));
                 }
-                else if(message.startsWith("L")){
-                
-                }
-                else if(message.startsWith("C")){
-                
+                else if (message.startsWith("L")) {
+                    // process life pack information
+                    handleLifePack(message.substring(2, message.length() - 1));
+                    
+                } else if (message.startsWith("C")) {
+                    handleCoinPack(message.substring(2, message.length() - 1));
                 }
                 else if(message.startsWith("G")){
                 
@@ -103,26 +109,115 @@ public class GameEngine {
     
     private void initializeMap(String details){
         try{
-        /* locations of my player name,bricks, stones and water in the string respectively. They are seperated with a colon. elements array will have those 
-           seperated but as strings. */
-        String[] elements = details.split(":");
-        myTank = elements[0];  // my player name. this is the first value in elements array
-        /* process brick locations. elements[1] has brick locations each brick seperated with semi-colon and cordinates seperated with commas. bricks array
-           will have x,y cordinates of bricks as string*/
-        String[] bricks = elements[1].split("[;,]");
-        for (int i=0; i<bricks.length; i+=2){
-            Brick brick = new Brick(Integer.parseInt(bricks[i]), Integer.parseInt(bricks[i+1]), 0);
-            brickList.add(brick);
-            mapDisplay[brick.getX()][brick.getY()].setGameObject(brick);
-            mapDisplay[brick.getX()][brick.getY()].draw();
-        }
-        String[] stones = elements[2].split("[;,]");
-        String[] water = elements[3].split("[;,]");
-    
+            gameWindow.showStatus("Loading map");
+            /* locations of my player name,bricks, stones and water in the string respectively. They are seperated with a colon. elements array will have those 
+               seperated but as strings. */
+            String[] elements = details.split(":");
+            myTank = elements[0];  // my player name. this is the first value in elements array
+            /* process brick locations. elements[1] has brick locations each brick seperated with semi-colon and cordinates seperated with commas. bricks array
+               will have x,y cordinates of bricks as string*/
+            String[] bricks = elements[1].split("[;,]");
+            for (int i=0; i<bricks.length; i+=2){   // since bricks array has both x,y cordinates i is incremented by 2
+                Brick brick = new Brick(Integer.parseInt(bricks[i]), Integer.parseInt(bricks[i+1]), 0);
+                brickList.add(brick);
+                mapDisplay[brick.getX()][brick.getY()].setGameObject(brick);
+                mapDisplay[brick.getX()][brick.getY()].draw();
+            }
+            String[] stones = elements[2].split("[;,]");
+            for (int i=0; i<stones.length; i+=2){   // since bricks array has both x,y cordinates i is incremented by 2
+                Stone stone = new Stone(Integer.parseInt(stones[i]), Integer.parseInt(stones[i+1]));
+                stoneList.add(stone);
+                mapDisplay[stone.getX()][stone.getY()].setGameObject(stone);
+                mapDisplay[stone.getX()][stone.getY()].draw();
+            }
+            String[] water = elements[3].split("[;,]");
+            for (int i=0; i<water.length; i+=2){   // since bricks array has both x,y cordinates i is incremented by 2
+                WaterPit waterPit = new WaterPit(Integer.parseInt(water[i]), Integer.parseInt(water[i+1]));
+                waterList.add(waterPit);
+                mapDisplay[waterPit.getX()][waterPit.getY()].setGameObject(waterPit);
+                mapDisplay[waterPit.getX()][waterPit.getY()].draw();
+            }
+            gameWindow.showStatus("Map loaded successfully");
         }catch(IOException e){
             System.out.println("IOException while loading image for map.");
             JOptionPane.showMessageDialog(gameWindow, "An error occured while loading map. Cannot find an image","IOException",JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    private void loadTanks(String details){
+        try{
+        String[] players = details.split(":");
+        for (String player:players){
+            String[] playerDetails = player.split("[;,]");
+            Tank tank = new Tank(Integer.parseInt(playerDetails[1]), Integer.parseInt(playerDetails[2]), playerDetails[0], Integer.parseInt(playerDetails[3]));
+            tankList.add(tank);
+            mapDisplay[tank.getX()][tank.getY()].setGameObject(tank);
+            mapDisplay[tank.getX()][tank.getY()].draw();
+        }
+        }catch(IOException e){
+            System.out.println("IOException while loading image for tank.");
+            JOptionPane.showMessageDialog(gameWindow, "An error occured while loading tanks. Cannot find an image","IOException",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void handleCoinPack(String details){
+        String[] coinPack = details.split("[:,]");
+        final int x = Integer.parseInt(coinPack[0]), y = Integer.parseInt(coinPack[1]);
+        final long timeOut = Long.parseLong(coinPack[2]);
+        CoinPack coin = new CoinPack(x,y,coinPack[3]);
+        mapDisplay[x][y].setGameObject(coin);
+        mapDisplay[x][y].setCoin(true);
+        mapDisplay[x][y].draw();
+        final MapDisplayUnit[][] map = mapDisplay;
+        new Thread(){
+            private int cor_x,cor_y;
+            MapDisplayUnit[][] map;
+            @Override
+            public void run(){
+                try {
+                    cor_x = x;
+                    cor_y = y;
+                    map = mapDisplay;
+                    sleep(timeOut);
+                    if (map[cor_x][cor_y].hasCoin()){
+                        map[cor_x][cor_y].setGameObject(null);
+                        map[cor_x][cor_y].draw();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameEngine.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.start();
+    }
+    
+    private void handleLifePack(String details){
+        String[] lifePack = details.split("[:,]");
+        final int x = Integer.parseInt(lifePack[0]), y = Integer.parseInt(lifePack[1]);
+        final long timeOut = Long.parseLong(lifePack[2]);
+        LifePack life = new LifePack(x,y);
+        mapDisplay[x][y].setGameObject(life);
+        mapDisplay[x][y].setLife(true);
+        mapDisplay[x][y].draw();
+        final MapDisplayUnit[][] map = mapDisplay;
+        new Thread(){
+            private int cor_x,cor_y;
+            MapDisplayUnit[][] map;
+            @Override
+            public void run(){
+                try {
+                    cor_x = x;
+                    cor_y = y;
+                    map = mapDisplay;
+                    sleep(timeOut);
+                    if (map[cor_x][cor_y].hasLife()){
+                        map[cor_x][cor_y].setGameObject(null);
+                        map[cor_x][cor_y].draw();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameEngine.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.start();
     }
     
     public boolean isGameStarted(){
