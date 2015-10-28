@@ -3,7 +3,11 @@ package entity;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import tanksmash.MapDisplayUnit;
 
 public class Bullet extends GameObject implements Runnable {
     
@@ -13,10 +17,12 @@ public class Bullet extends GameObject implements Runnable {
     private static BufferedImage bullet3 = null;
     
     private int directoin;
+    private MapDisplayUnit[][] map;
 
-    public Bullet(int x, int y,int direction) throws IOException {
+    public Bullet(int x, int y,int direction,MapDisplayUnit[][] map) throws IOException {
         super(x, y);
         this.directoin = direction;
+        this.map = map;
         // load images
         if (bullet0==null){
             bullet0 = ImageIO.read(getClass().getResourceAsStream("/resources/bullet0.jpg"));
@@ -48,10 +54,44 @@ public class Bullet extends GameObject implements Runnable {
                 return null;
         }
     }
+    
+    public int getNextX(){
+        switch(directoin){
+            case 0:
+                return getX();
+            case 1:
+                return getX()+1;
+            case 2:
+                return getX();
+            default:
+                return getX()-1;
+        }
+    }
+    
+    public int getNextY(){
+        switch(directoin){
+            case 0:
+                return getY()-1;
+            case 1:
+                return getY();
+            case 2:
+                return getY()+1;
+            default:
+                return getY();
+        }
+    }
 
     @Override
     public void run() {
-        
+        while(getX()>=0 && getY()<10 && getY()>=0 && getY()<10){
+            try {
+                sleep(300);
+                map[getX()][getY()].draw();
+                setX(getNextX());
+                setY(getNextY());
+                map[getX()][getY()].draw(5,15,getImage());
+            } catch (InterruptedException ex){}
+        }
     }
     
 }

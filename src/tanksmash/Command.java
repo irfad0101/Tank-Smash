@@ -26,7 +26,7 @@ public class Command {
     public static final String NOTACONTESTANT = "NOT_A_VALID_CONTESTANT#";
     public static final String TOOQUICK = "TOO_QUICK#";
     public static final String CELLOCCUPIED = "CELL_OCCUPIED#";
-    public static final String OBSTACLE = "OBSTACLE#";
+    public static final String OBSTACLE = "OBSTACLE";  // obstacle message is send as OBSTACLE;25# So # is ommitted to check with startswith method
     public static final String FELLTOPIT = "PITFALL#";
     public static final String DEAD = "DEAD#";
     public static final String NOTYETSTARTED = "GAME_NOT_STARTED_YET#";
