@@ -14,14 +14,6 @@ public class TankSmash {
 
     public static void main(String[] args) {
         try {
-            /*GameObject go = new Tank(0,0);
-            if (go.getClass()==Tank.class){
-            System.out.println("Tank:getClass");
-            }
-            if (go instanceof Tank){
-            System.out.println("Tank:instanceof");
-            }
-            */
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             System.out.println("Exception while setting Look and Feel");
@@ -29,7 +21,10 @@ public class TankSmash {
         GameWindow gw = new GameWindow();
         gw.setLocationRelativeTo(null);
         gw.setVisible(true);
-        (new Thread(new NetworkHandler(7000, gw.getGameEngine()))).start();
+        NetworkHandler nw = NetworkHandler.getInstance();
+        nw.setPort(7000);
+        nw.setGameEngine(gw.getGameEngine());
+        (new Thread(nw)).start();
     }
     
 }

@@ -29,6 +29,7 @@ public class GameWindow extends javax.swing.JFrame {
             }
             //final String m = message;
             if (message!=null){
+                showStatus("");
                 try {
                     /*new Thread(){
                         public void run(){
@@ -39,7 +40,7 @@ public class GameWindow extends javax.swing.JFrame {
                             }
                         }
                     }.start();*/
-                    NetworkHandler.send(ip, port, message);
+                    NetworkHandler.getInstance().send(ip, port, message);
                 } catch (IOException ex) {
                     System.out.println("Commmand "+message+" not sent");
                 }
@@ -300,7 +301,8 @@ public class GameWindow extends javax.swing.JFrame {
             txtIP.setEnabled(false);
             txtPort.setEnabled(false);
             //btnJoinGame.setEnabled(false);
-            NetworkHandler.send(this.ip, this.port, Command.JOIN);
+            NetworkHandler.getInstance().send(this.ip, this.port, Command.JOIN);
+            showStatus("");
             requestFocus();
         } catch (IOException | NumberFormatException ex) {
             System.out.println("JOIN#:Network Error");

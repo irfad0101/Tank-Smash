@@ -26,10 +26,22 @@ public class NetworkHandler implements Runnable {
     private ServerSocket server;
     private int port;
     private GameEngine gameEngine;
+    private static NetworkHandler networkHandler;
     
-    public NetworkHandler(int port, GameEngine gameEngine){
-        this.port = port;
-        this.gameEngine = gameEngine;
+    private NetworkHandler(){
+        networkHandler = null;
+        
+    }
+    
+    public static NetworkHandler getInstance(){
+       /* if (networkHandler==null){
+            synchronized(NetworkHandler.class){
+                if (networkHandler==null)
+                    networkHandler = new NetworkHandler();
+                    return networkHandler;
+            }
+        }*/
+        return networkHandler;
     }
     
     private void recieve(){
@@ -52,7 +64,7 @@ public class NetworkHandler implements Runnable {
         }
     }
 
-    public static synchronized void send(String ipAddress, int port, String message) throws IOException{
+    public synchronized void send(String ipAddress, int port, String message) throws IOException{
             Socket socket = new Socket(ipAddress, port);
             DataOutputStream d = new DataOutputStream(socket.getOutputStream());
             d.writeBytes(message);
@@ -66,8 +78,16 @@ public class NetworkHandler implements Runnable {
             this.server = new ServerSocket(this.port);
             recieve();
         } catch (IOException ex) {
-            Logger.getLogger(NetworkHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setGameEngine(GameEngine gameEngine) {
+        this.gameEngine = gameEngine;
     }
     
 }

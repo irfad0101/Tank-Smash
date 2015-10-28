@@ -42,6 +42,13 @@ public class MapDisplayUnit extends Canvas{
         g.dispose();
     }
     
+    public void draw(int x, int y, BufferedImage bi){
+        Graphics2D g = (Graphics2D) this.getGraphics();
+        g.drawImage(bi,x,y,this);
+        Toolkit.getDefaultToolkit().sync();
+        g.dispose();
+    }
+    
     public GameObject getGameObject(){
         return gameObject;
     }

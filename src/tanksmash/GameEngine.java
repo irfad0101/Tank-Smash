@@ -93,20 +93,16 @@ public class GameEngine {
                 else if(message.startsWith("S")){
                     /* similar to aboves condition, message that starts with S have player location and indicate game has begun. remoove unnecessary
                        parts of message and send to process*/
-                    gameWindow.showStatus("");
                     loadTanks(message.substring(2, message.length()-1));
                 }
                 else if (message.startsWith("L")) {
                     // process life pack information. the string contains cordinates, time out
-                    gameWindow.showStatus("");
                     handleLifePack(message.substring(2, message.length() - 1));
                     
                 } else if (message.startsWith("C")) {
-                    gameWindow.showStatus("");
                     handleCoinPack(message.substring(2, message.length() - 1));
                 }
                 else if(message.startsWith("G")){
-                    gameWindow.showStatus("");
                     updateMapDisplay(message.substring(2, message.length()-1));
                 }
         }
@@ -245,6 +241,17 @@ public class GameEngine {
             gameWindow.updateTable(i, 1, playerDetails[6]);
             gameWindow.updateTable(i, 2, playerDetails[7]);
             gameWindow.updateTable(i, 3, playerDetails[5]);
+            if (playerDetails[4].equals("1")){
+                try {
+                    Bullet b = new Bullet(tank.getX(), tank.getY(), tank.getDirection(), mapDisplay);
+                    b.setX(b.getNextX());
+                    b.setY(b.getNextY());
+                    mapDisplay[b.getX()][b.getY()].draw(5, 15, b.getImage());
+                    new Thread(b).start();
+                } catch (IOException ex) {
+                    System.out.println("Error loading image for bullet.");
+                }
+            }
         }
         String[] brickDetails = mapUpdate[mapUpdate.length - 1].split("[;,]");
         for (int i = 0; i < brickDetails.length; i += 3) {
