@@ -34,13 +34,13 @@ public class NetworkHandler implements Runnable {
     }
     
     public static NetworkHandler getInstance(){
-       /* if (networkHandler==null){
+        if (networkHandler==null){
             synchronized(NetworkHandler.class){
                 if (networkHandler==null)
                     networkHandler = new NetworkHandler();
                     return networkHandler;
             }
-        }*/
+        }
         return networkHandler;
     }
     

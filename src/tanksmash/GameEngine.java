@@ -80,6 +80,8 @@ public class GameEngine {
                 break;
             case Command.FELLTOPIT:
                 gameWindow.showStatus("Your tank fell into pit and smashed");
+                JOptionPane.showMessageDialog(gameWindow,"Your tank fell into pit and smashed","Player Fell",JOptionPane.INFORMATION_MESSAGE);
+                break;
             default:
                 // handle commands that need some string manupilation
                 if (message.startsWith(Command.OBSTACLE)){
