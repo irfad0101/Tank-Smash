@@ -15,8 +15,6 @@ public class GameEngine {
     private boolean alive;
     private String myTank;
     private ArrayList<Brick> brickList;
-    private ArrayList<Stone> stoneList;
-    private ArrayList<WaterPit> waterList;
     private ArrayList<Bullet> bulletList;
     private ArrayList<Tank> tankList;
     private GameWindow gameWindow;
@@ -27,8 +25,6 @@ public class GameEngine {
         this.gameFinished = false;
         this.alive = false;
         brickList = new ArrayList<Brick>();
-        stoneList = new ArrayList<Stone>();
-        waterList = new ArrayList<WaterPit>();
         bulletList = new ArrayList<Bullet>();
         tankList = new ArrayList<Tank>();
         this.gameWindow = gameWindow;
@@ -101,7 +97,7 @@ public class GameEngine {
                     loadTanks(message.substring(2, message.length()-1));
                 }
                 else if (message.startsWith("L")) {
-                    // process life pack information
+                    // process life pack information. the string contains cordinates, time out
                     gameWindow.showStatus("");
                     handleLifePack(message.substring(2, message.length() - 1));
                     
@@ -135,14 +131,12 @@ public class GameEngine {
             String[] stones = elements[2].split("[;,]");
             for (int i=0; i<stones.length; i+=2){   // since bricks array has both x,y cordinates i is incremented by 2
                 Stone stone = new Stone(Integer.parseInt(stones[i]), Integer.parseInt(stones[i+1]));
-                stoneList.add(stone);
                 mapDisplay[stone.getX()][stone.getY()].setGameObject(stone);
                 mapDisplay[stone.getX()][stone.getY()].draw();
             }
             String[] water = elements[3].split("[;,]");
             for (int i=0; i<water.length; i+=2){   // since bricks array has both x,y cordinates i is incremented by 2
                 WaterPit waterPit = new WaterPit(Integer.parseInt(water[i]), Integer.parseInt(water[i+1]));
-                waterList.add(waterPit);
                 mapDisplay[waterPit.getX()][waterPit.getY()].setGameObject(waterPit);
                 mapDisplay[waterPit.getX()][waterPit.getY()].draw();
             }
@@ -154,6 +148,7 @@ public class GameEngine {
     }
     
     private void loadTanks(String details){
+        int i =0;
         try{
         String[] players = details.split(":");
         for (String player:players){
@@ -162,6 +157,10 @@ public class GameEngine {
             tankList.add(tank);
             mapDisplay[tank.getX()][tank.getY()].setGameObject(tank);
             mapDisplay[tank.getX()][tank.getY()].draw();
+            for (int j=1;j<3;j++){
+                gameWindow.updateTable(i, j, "0");
+            }
+            gameWindow.updateTable(i++, 3, "100%");
         }
         }catch(IOException e){
             System.out.println("IOException while loading image for tank.");
@@ -171,14 +170,14 @@ public class GameEngine {
     
     private void handleCoinPack(String details){
         String[] coinPack = details.split("[:,]");
-        final int x = Integer.parseInt(coinPack[0]), y = Integer.parseInt(coinPack[1]);
+        final int x = Integer.parseInt(coinPack[0]), y = Integer.parseInt(coinPack[1]); // need to be accesed by the thread below. hence final
         final long timeOut = Long.parseLong(coinPack[2]);
         CoinPack coin = new CoinPack(x,y,coinPack[3]);
         mapDisplay[x][y].setGameObject(coin);
         mapDisplay[x][y].setCoin(true);
         mapDisplay[x][y].draw();
-        final MapDisplayUnit[][] map = mapDisplay;
-        new Thread(){
+        final MapDisplayUnit[][] map = mapDisplay;      // need by the thread below
+        new Thread(){       // thread that will remove coin from map if it didn't collected by any player before time out
             private int cor_x,cor_y;
             MapDisplayUnit[][] map;
             @Override
@@ -241,6 +240,11 @@ public class GameEngine {
             tank.setDirection(Integer.parseInt(playerDetails[3]));
             mapDisplay[tank.getX()][tank.getY()].setGameObject(tank);
             mapDisplay[tank.getX()][tank.getY()].draw();
+            mapDisplay[tank.getX()][tank.getY()].setLife(false);
+            mapDisplay[tank.getX()][tank.getY()].setCoin(false);
+            gameWindow.updateTable(i, 1, playerDetails[6]);
+            gameWindow.updateTable(i, 2, playerDetails[7]);
+            gameWindow.updateTable(i, 3, playerDetails[5]);
         }
         String[] brickDetails = mapUpdate[mapUpdate.length - 1].split("[;,]");
         for (int i = 0; i < brickDetails.length; i += 3) {

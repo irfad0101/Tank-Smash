@@ -72,6 +72,16 @@ public class GameWindow extends javax.swing.JFrame {
             }
         }
         gameEngine = new GameEngine(this, mapDisplay);
+        for (int i=0;i<5;i++){
+            tblScore.setValueAt("P"+i, i, 0);
+            for (int j=1; j<4;j++){
+                tblScore.setValueAt("N/A",i, j);
+            }
+        }
+    }
+    
+    public void updateTable(int row, int column, String value){
+        tblScore.setValueAt(value, row, column);
     }
     
     public GameEngine getGameEngine(){
@@ -166,6 +176,7 @@ public class GameWindow extends javax.swing.JFrame {
         tblScore.setFocusable(false);
         tblScore.setRequestFocusEnabled(false);
         tblScore.setRowSelectionAllowed(false);
+        tblScore.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblScore);
         if (tblScore.getColumnModel().getColumnCount() > 0) {
             tblScore.getColumnModel().getColumn(0).setResizable(false);
@@ -290,6 +301,7 @@ public class GameWindow extends javax.swing.JFrame {
             txtPort.setEnabled(false);
             //btnJoinGame.setEnabled(false);
             NetworkHandler.send(this.ip, this.port, Command.JOIN);
+            requestFocus();
         } catch (IOException | NumberFormatException ex) {
             System.out.println("JOIN#:Network Error");
             lblStatus.setText("Network Error. Please try again.");

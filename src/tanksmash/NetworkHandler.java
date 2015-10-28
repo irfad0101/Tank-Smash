@@ -38,7 +38,7 @@ public class NetworkHandler implements Runnable {
                 Socket socket = server.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String reply = in.readLine();
-                System.out.println(reply);
+                System.out.println("Message from server: "+reply);
                 socket.close();
                 new Thread(){
                     @Override
