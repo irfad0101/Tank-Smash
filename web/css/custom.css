@@ -1,7 +1,12 @@
 body{
 	padding-top: 70px;
+	padding-bottom: 100px;
 }
 
 .carousel{
 	padding-bottom: 20px;
+}
+
+#rows{
+	padding-top: 20px;
 }
