@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace TankSmashXNA
 {
@@ -10,6 +11,9 @@ namespace TankSmashXNA
         /// </summary>
         static void Main(string[] args)
         {
+            NetworkHandler netHandler = NetworkHandler.getInstance();
+            Thread thread = new Thread(new ThreadStart(netHandler.Recieve));
+            thread.Start();
             using (Game1 game = new Game1())
             {
                 game.Run();

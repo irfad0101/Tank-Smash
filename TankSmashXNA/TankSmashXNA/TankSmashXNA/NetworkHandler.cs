@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace TankSmashXNA
 {
@@ -12,6 +13,7 @@ namespace TankSmashXNA
     {
 
         private static NetworkHandler netHandler = new NetworkHandler();
+        private GameEngine gameEngine;
         private TcpClient sender;
         private NetworkStream sendStream;
         private BinaryWriter writer;
@@ -19,7 +21,9 @@ namespace TankSmashXNA
         private NetworkStream recieveStream;
         private BinaryReader reader;
 
-        private NetworkHandler(){}
+        private NetworkHandler(){
+            GameEngine.GetInstance();
+        }
 
         public static NetworkHandler getInstance(){
             return netHandler;
@@ -75,6 +79,8 @@ namespace TankSmashXNA
                         }
                         String message = Encoding.UTF8.GetString(serverMsg.ToArray());
                         Console.WriteLine(message);
+                        Thread thread = new Thread(new ParameterizedThreadStart(gameEngine.decode));
+                        thread.Start(message);
                         recieveStream.Close();
                     }
                 }
