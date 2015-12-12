@@ -27,6 +27,7 @@ namespace TankSmashXNA
         Texture2D stoneTexture;
         Texture2D coinPackTexture;
         Texture2D bulletTexture;
+        GameEngine gameEngine;
 
 
         public Game1()
@@ -49,6 +50,7 @@ namespace TankSmashXNA
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             Window.Title = "Tank Game - Client";
+            gameEngine =GameEngine.GetInstance();
             base.Initialize();
         }
 
@@ -67,7 +69,7 @@ namespace TankSmashXNA
             lifePackTexture = Content.Load<Texture2D>("LifePack");
             stoneTexture = Content.Load<Texture2D>("stone");
             coinPackTexture = Content.Load<Texture2D>("coins");
-            bulletTexture = Content.Load<Texture2D>("Bullet");
+            bulletTexture = Content.Load<Texture2D>("upBullet");
 
             // TODO: use this.Content to load your game content here
         }
@@ -136,8 +138,14 @@ namespace TankSmashXNA
 
         private void DrawBrick()
         {
-            Rectangle brickRectangle = new Rectangle(61, 1, 60, 60);
-            spriteBatch.Draw(brickTexture, brickRectangle, Color.White);
+            List<Brick> brickList = gameEngine.Bricks;
+            foreach (Brick item in brickList)
+            {
+                Rectangle brickRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
+                spriteBatch.Draw(brickTexture, brickRectangle, Color.White);
+            }
+            
+            
         }
         private void DrawBrick(List<Brick> brickList)
         {
@@ -146,7 +154,12 @@ namespace TankSmashXNA
 
         private void DrawWater()
         {
-            Rectangle waterRectangle = new Rectangle(61, 121, 60, 60);
+            List<WaterPit> waterPitList = gameEngine.WaterPits;
+            /*foreach (var item in collection)
+	{
+		 
+	}*/
+            Rectangle waterRectangle = new Rectangle(121, 121, 60, 60);
             spriteBatch.Draw(waterTexture, waterRectangle, Color.White);
         }
         private void DrawWater(List<WaterPit> waterPit){

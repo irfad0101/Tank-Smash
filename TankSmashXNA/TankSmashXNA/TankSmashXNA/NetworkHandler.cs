@@ -22,7 +22,7 @@ namespace TankSmashXNA
         private BinaryReader reader;
 
         private NetworkHandler(){
-            GameEngine.GetInstance();
+            gameEngine = GameEngine.GetInstance();
         }
 
         public static NetworkHandler getInstance(){
@@ -78,9 +78,9 @@ namespace TankSmashXNA
                             serverMsg.Add((Byte)asw);
                         }
                         String message = Encoding.UTF8.GetString(serverMsg.ToArray());
-                        Console.WriteLine(message);
-                        Thread thread = new Thread(new ParameterizedThreadStart(gameEngine.decode));
-                        thread.Start(message);
+                        gameEngine.msg = message;
+                        Thread thread = new Thread(new ThreadStart(gameEngine.decode));
+                        thread.Start();
                         recieveStream.Close();
                     }
                 }

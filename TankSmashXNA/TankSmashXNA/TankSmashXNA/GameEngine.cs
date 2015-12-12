@@ -9,6 +9,7 @@ namespace TankSmashXNA
     class GameEngine
     {
         private static GameEngine engine = new GameEngine();
+        public String msg;
         
         private List<Tank> tankList;
         public List<Tank> Tanks
@@ -34,19 +35,25 @@ namespace TankSmashXNA
             get { return waterPitList; }
         }
 
-        private GameEngine(){}
+        private GameEngine()
+        {
+            tankList = new List<Tank>();
+            brickList = new List<Brick>();
+            stoneList = new List<Stone>();
+            waterPitList = new List<WaterPit>();
+        }
 
         public static GameEngine GetInstance()
         {
             return engine;
         }
 
-        public void decode(String message)
+        public void decode()
         {
-            if (message.StartsWith("I"))
-                Initialize(message.Substring(2, message.Length - 2));
+            if (msg.StartsWith("I"))
+                Initialize(msg.Substring(2, msg.Length - 2));
             else
-                Console.WriteLine(message);
+                Console.WriteLine(msg);
         }
 
         public void Initialize(String message)
