@@ -170,6 +170,12 @@ namespace TankSmashXNA
         {
             Rectangle tankRectangle = new Rectangle(121, 121, 60, 60);
             spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
+           /* List<Tank> tankList = gameEngine.Tanks;
+            foreach (Tank item in tankList)
+            {
+                Rectangle tankRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
+                spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
+            }*/
         }
         private void DrawTank(List<Tank> tank)
         {
