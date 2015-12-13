@@ -35,12 +35,33 @@ namespace TankSmashXNA
             get { return waterPitList; }
         }
 
+        private List<CoinPack> coinPackList;
+        public List<CoinPack> CoinPacks
+        {
+            get { return coinPackList; }
+        }
+
+        private List<LifePack> lifePackList;
+        public List<LifePack> LifePacks
+        {
+            get { return lifePackList; }
+        }
+
+        private List<Bullet> bulletList;
+        public List<Bullet> Bullerts
+        {
+            get { return bulletList; }
+        }
+
         private GameEngine()
         {
             tankList = new List<Tank>();
             brickList = new List<Brick>();
             stoneList = new List<Stone>();
             waterPitList = new List<WaterPit>();
+            coinPackList = new List<CoinPack>();
+            lifePackList = new List<LifePack>();
+            bulletList = new List<Bullet>();
         }
 
         public static GameEngine GetInstance()
@@ -68,13 +89,13 @@ namespace TankSmashXNA
             String[] stones = worlddetails[2].Split(new char[] { ';', ',' });
             for (int i = 0; i < bricks.Length; i += 2)
             {
-                Stone stone = new Stone(Int32.Parse(bricks[i]), Int32.Parse(bricks[i + 1]));
+                Stone stone = new Stone(Int32.Parse(stones[i]), Int32.Parse(stones[i + 1]));
                 stoneList.Add(stone);
             }
             String[] waterPits = worlddetails[3].Split(new char[] { ';', ',' });
             for (int i = 0; i < bricks.Length; i += 2)
             {
-                WaterPit waterPit = new WaterPit(Int32.Parse(bricks[i]), Int32.Parse(bricks[i + 1]));
+                WaterPit waterPit = new WaterPit(Int32.Parse(waterPits[i]), Int32.Parse(waterPits[i + 1]));
                 waterPitList.Add(waterPit);
             }
         }
