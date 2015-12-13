@@ -114,7 +114,7 @@ namespace TankSmashXNA
             DrawWater();
             DrawTank();
             DrawLifePack();
-            DrawStone();
+           // DrawStone();
             DrawCoinPack();
            // DrawBullet();
             spriteBatch.End();
@@ -155,12 +155,12 @@ namespace TankSmashXNA
         private void DrawWater()
         {
             List<WaterPit> waterPitList = gameEngine.WaterPits;
-            /*foreach (var item in collection)
-	{
-		 
-	}*/
-            Rectangle waterRectangle = new Rectangle(121, 121, 60, 60);
-            spriteBatch.Draw(waterTexture, waterRectangle, Color.White);
+            foreach (WaterPit item in waterPitList)
+	        {
+                Rectangle waterRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
+                spriteBatch.Draw(waterTexture, waterRectangle, Color.White);
+	        }
+            
         }
         private void DrawWater(List<WaterPit> waterPit){
 
@@ -187,8 +187,13 @@ namespace TankSmashXNA
 
         private void DrawStone()
         {
-            Rectangle stoneRectangle = new Rectangle(300, 300, 60, 60);
-            spriteBatch.Draw(stoneTexture, stoneRectangle, Color.White);
+            List<Stone> stoneList = gameEngine.Stones;
+            foreach (Stone item in stoneList)
+            {
+                Rectangle stoneRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
+                spriteBatch.Draw(stoneTexture, stoneRectangle, Color.White);   
+            }
+            
         }
         private void DrawStone(List<Stone> stone)
         {
