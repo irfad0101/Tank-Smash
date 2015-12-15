@@ -28,6 +28,10 @@ namespace TankSmashXNA
         Texture2D coinPackTexture;
         Texture2D bulletTexture;
         Texture2D groundTexture;
+        Texture2D leftTankTexture;
+        Texture2D rightTankTexture;
+        Texture2D upTankTexture;
+        Texture2D downTankTexture;
         GameEngine gameEngine;
 
 
@@ -46,7 +50,7 @@ namespace TankSmashXNA
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            graphics.PreferredBackBufferWidth = 770;
+            graphics.PreferredBackBufferWidth = 820;
             graphics.PreferredBackBufferHeight = 550;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
@@ -70,8 +74,12 @@ namespace TankSmashXNA
             lifePackTexture = Content.Load<Texture2D>("LifePack");
             stoneTexture = Content.Load<Texture2D>("stone");
             coinPackTexture = Content.Load<Texture2D>("coins");
-            bulletTexture = Content.Load<Texture2D>("upBullet");
+            bulletTexture = Content.Load<Texture2D>("bullet");
             groundTexture = Content.Load<Texture2D>("ground");
+            upTankTexture = Content.Load<Texture2D>("upTank");
+            downTankTexture = Content.Load<Texture2D>("downTank");
+            leftTankTexture = Content.Load<Texture2D>("leftTank");
+            rightTankTexture = Content.Load<Texture2D>("rightTank");
 
             // TODO: use this.Content to load your game content here
         }
@@ -114,18 +122,20 @@ namespace TankSmashXNA
             DrawBackground();
             DrawBrick();
             DrawWater();
-            DrawTank();
+           
             DrawLifePack();
             DrawStone();
             DrawCoinPack();
+            
             DrawBullet();
+            DrawTank();
             spriteBatch.End();
             base.Draw(gameTime);
         }
 
         private void DrawBackground()
         {
-            Rectangle groundRectangle = new Rectangle(0,0,770,550);
+            Rectangle groundRectangle = new Rectangle(0,0,820,550);
             spriteBatch.Draw(groundTexture, groundRectangle, Color.White);
             for (int i = 0; i < 10; i++)
 			{
@@ -164,7 +174,23 @@ namespace TankSmashXNA
             foreach (Tank item in tankList)
             {
                 Rectangle tankRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
-                spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
+                switch (item.Direction)
+                {
+                    case 0:
+                        spriteBatch.Draw(upTankTexture, tankRectangle, Color.White);
+                        break;
+                    case 1:
+                        spriteBatch.Draw(rightTankTexture, tankRectangle, Color.White);
+                        break;
+                    case 2:
+                        spriteBatch.Draw(downTankTexture, tankRectangle, Color.White);
+                        break;
+                    case 3:
+                        spriteBatch.Draw(leftTankTexture, tankRectangle, Color.White);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -201,7 +227,7 @@ namespace TankSmashXNA
 
         private void DrawBullet()
         {
-            Rectangle bulletRectangle = new Rectangle(375, 240, 30, 60);
+            Rectangle bulletRectangle = new Rectangle(491, 491, 50, 50);
             spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);
         }
 
