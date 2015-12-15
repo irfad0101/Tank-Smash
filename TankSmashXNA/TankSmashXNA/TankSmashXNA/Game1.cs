@@ -115,10 +115,10 @@ namespace TankSmashXNA
             DrawBrick();
             DrawWater();
             DrawTank();
-            //DrawLifePack();
+            DrawLifePack();
             DrawStone();
             DrawCoinPack();
-            //DrawBullet();
+            DrawBullet();
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -160,8 +160,6 @@ namespace TankSmashXNA
 
         private void DrawTank()
         {
-            /*Rectangle tankRectangle = new Rectangle(121, 121, 60, 60);
-            spriteBatch.Draw(tankTexture, tankRectangle, Color.White);*/
             List<Tank> tankList = gameEngine.Tanks;
             foreach (Tank item in tankList)
             {
@@ -172,8 +170,6 @@ namespace TankSmashXNA
 
         private void DrawLifePack()
         {
-            /*Rectangle lifePackRectangle = new Rectangle(241, 241, 60, 60);
-            spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);*/
             List<LifePack> lifePackList = gameEngine.LifePacks;
             foreach (LifePack item in lifePackList)
             {
