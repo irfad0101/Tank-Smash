@@ -35,7 +35,10 @@ namespace TankSmashXNA.Entity
         public void StartTimer()
         {
             Thread.Sleep(LifeTime);
-            coinPackList.Remove(this);
+            if (coinPackList.Contains(this))
+            {
+                coinPackList.Remove(this);
+            }
         }
 
     }

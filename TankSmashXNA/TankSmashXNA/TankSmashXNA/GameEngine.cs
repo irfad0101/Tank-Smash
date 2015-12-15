@@ -89,6 +89,10 @@ namespace TankSmashXNA
             {
                 HandleCoinPack(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
             }
+            else if (msg.StartsWith("L:"))
+            {
+                HandleLifePack(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
         }
 
         private void Initialize(String message)
@@ -153,6 +157,15 @@ namespace TankSmashXNA
             CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
             coinPackList.Add(coin);
             Thread thread = new Thread(new ThreadStart(coin.StartTimer));
+            thread.Start();
+        }
+
+        private void HandleLifePack(String message)
+        {
+            String[] lifeDetails = message.Split(new char[] { ':', ',' });
+            LifePack life = new LifePack(Int32.Parse(lifeDetails[0]), Int32.Parse(lifeDetails[1]), Int32.Parse(lifeDetails[2]), lifePackList);
+            lifePackList.Add(life);
+            Thread thread = new Thread(new ThreadStart(life.StartTimer));
             thread.Start();
         }
 
