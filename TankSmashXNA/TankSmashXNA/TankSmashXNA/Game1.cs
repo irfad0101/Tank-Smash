@@ -170,8 +170,12 @@ namespace TankSmashXNA
 
         private void DrawLifePack()
         {
-            Rectangle lifePackRectangle = new Rectangle(241, 241, 60, 60);
-            spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);
+            List<LifePack> lifePackList = gameEngine.LifePacks;
+            foreach (LifePack life in lifePackList)
+            {
+                Rectangle lifePackRectangle = new Rectangle(life.X*60, life.Y*60, 60, 60);
+                spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);
+            }
         }
 
         private void DrawStone()
