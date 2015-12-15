@@ -144,12 +144,6 @@ namespace TankSmashXNA
                 Rectangle brickRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(brickTexture, brickRectangle, Color.White);
             }
-            
-            
-        }
-        private void DrawBrick(List<Brick> brickList)
-        {
-            
         }
 
         private void DrawWater()
@@ -160,10 +154,6 @@ namespace TankSmashXNA
                 Rectangle waterRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(waterTexture, waterRectangle, Color.White);
 	        }
-            
-        }
-        private void DrawWater(List<WaterPit> waterPit){
-
         }
 
         private void DrawTank()
@@ -177,18 +167,11 @@ namespace TankSmashXNA
                 spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
             }
         }
-        private void DrawTank(List<Tank> tank)
-        {
 
-        }
         private void DrawLifePack()
         {
             Rectangle lifePackRectangle = new Rectangle(241, 241, 60, 60);
             spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);
-        }
-        private void DrawLifePack(List<LifePack> lifePack)
-        {
-
         }
 
         private void DrawStone()
@@ -201,27 +184,22 @@ namespace TankSmashXNA
             }
             
         }
-        private void DrawStone(List<Stone> stone)
-        {
 
-        }
         private void DrawCoinPack()
         {
-            Rectangle coinRectangle = new Rectangle(360, 60, 60, 60);
-            spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
+            List<CoinPack> coinList = gameEngine.CoinPacks;
+            foreach (CoinPack coin in coinList)
+            {
+                Rectangle coinRectangle = new Rectangle(coin.X*60, coin.Y*60, 60, 60);
+                spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
+            }
         }
-        private void DrawCoinPack(List<CoinPack> coinPack)
-        {
 
-        }
         private void DrawBullet()
         {
             Rectangle bulletRectangle = new Rectangle(375, 240, 30, 60);
             spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);
         }
-        private void DrawBullet(List<CoinPack> coinPack)
-        {
 
-        }
     }
 }

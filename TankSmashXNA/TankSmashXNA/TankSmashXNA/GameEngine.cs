@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using TankSmashXNA.Entity;
 
 namespace TankSmashXNA
@@ -84,6 +85,10 @@ namespace TankSmashXNA
             {
                 UpdateGameObjects(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
             }
+            else if (msg.StartsWith("C:"))
+            {
+                HandleCoinPack(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
         }
 
         private void Initialize(String message)
@@ -140,6 +145,15 @@ namespace TankSmashXNA
                 Brick brick = brickList[i / 3];
                 brick.Damage = Int32.Parse(brickDetails[i + 2]);
             }
+        }
+
+        private void HandleCoinPack(String message)
+        {
+            String[] coinDetails = message.Split(new char[] { ':', ',' });
+            CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
+            coinPackList.Add(coin);
+            Thread thread = new Thread(new ThreadStart(coin.StartTimer));
+            thread.Start();
         }
 
     }
