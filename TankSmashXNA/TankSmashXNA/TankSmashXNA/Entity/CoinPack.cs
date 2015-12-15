@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace TankSmashXNA.Entity
 {
@@ -15,17 +16,26 @@ namespace TankSmashXNA.Entity
             set { amount = value; }
         }
 
-        private long lifeTime;
-        public long LifeTime
+        private int lifeTime;
+        public int LifeTime
         {
             get { return lifeTime; }
             set { lifeTime = value; }
         }
 
-        public CoinPack(int x, int y,int Amount,long lifeTime) : base(x, y)
+        private List<CoinPack> coinPackList;
+
+        public CoinPack(int x, int y,int Amount,int lifeTime,List<CoinPack> coinList) : base(x, y)
         {
             this.Amount = amount;
             this.LifeTime = lifeTime;
+            this.coinPackList = coinList;
+        }
+
+        public void StartTimer()
+        {
+            Thread.Sleep(LifeTime);
+            coinPackList.Remove(this);
         }
 
     }

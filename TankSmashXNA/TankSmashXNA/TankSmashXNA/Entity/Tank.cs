@@ -28,6 +28,13 @@ namespace TankSmashXNA.Entity
             set { points = value; }
         }
 
+        private int coins;
+        public int Coins
+        {
+            get { return coins; }
+            set { coins = value; }
+        }
+
         private String name;
 
         public String Name
@@ -36,11 +43,13 @@ namespace TankSmashXNA.Entity
             set { name = value; }
         }
 
-        public Tank(int x, int y, int direction, int health, int points) : base(x,y)
+        public Tank(String name, int x, int y, int direction, int health, int points, int coins) : base(x,y)
         {
+            this.Name = name;
             this.Direction = direction;
             this.Health = health;
             this.Points = points;
+            this.Coins = coins;
         }
 
     }

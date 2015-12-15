@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using TankSmashXNA.Entity;
 
 namespace TankSmashXNA
@@ -9,7 +10,7 @@ namespace TankSmashXNA
     class GameEngine
     {
         private static GameEngine engine = new GameEngine();
-        public String msg;
+        private const int LINE_FEED_LENGTH = 2;
         
         private List<Tank> tankList;
         public List<Tank> Tanks
@@ -69,15 +70,28 @@ namespace TankSmashXNA
             return engine;
         }
 
-        public void decode()
+        public void decode(Object message)
         {
-            if (msg.StartsWith("I"))
-                Initialize(msg.Substring(2, msg.Length - 2));
-            else
-                Console.WriteLine(msg);
+            String msg = (String)message;
+            if (msg.StartsWith("I:"))
+            {
+                Initialize(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
+            else if (msg.StartsWith("S:"))
+            {
+                InitializeTanks(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
+            else if (msg.StartsWith("G:"))
+            {
+                UpdateGameObjects(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
+            else if (msg.StartsWith("C:"))
+            {
+                HandleCoinPack(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
+            }
         }
 
-        public void Initialize(String message)
+        private void Initialize(String message)
         {
             String[] worlddetails = message.Split(':');
             String[] bricks = worlddetails[1].Split(new char[] { ';', ',' });
@@ -87,17 +101,59 @@ namespace TankSmashXNA
                 brickList.Add(brick);
             }
             String[] stones = worlddetails[2].Split(new char[] { ';', ',' });
-            for (int i = 0; i < bricks.Length; i += 2)
+            for (int i = 0; i < stones.Length; i += 2)
             {
                 Stone stone = new Stone(Int32.Parse(stones[i]), Int32.Parse(stones[i + 1]));
                 stoneList.Add(stone);
             }
             String[] waterPits = worlddetails[3].Split(new char[] { ';', ',' });
-            for (int i = 0; i < bricks.Length; i += 2)
+            for (int i = 0; i < waterPits.Length; i += 2)
             {
                 WaterPit waterPit = new WaterPit(Int32.Parse(waterPits[i]), Int32.Parse(waterPits[i + 1]));
                 waterPitList.Add(waterPit);
             }
+        }
+
+        private void InitializeTanks(String message)
+        {
+            String[] tanks = message.Split(':');
+            foreach (String tank in tanks)
+            {
+                String[] tankDetails = tank.Split(new char[] { ';', ',' });
+                Tank t = new Tank(tankDetails[0],Int32.Parse(tankDetails[1]), Int32.Parse(tankDetails[2]), Int32.Parse(tankDetails[3]), 100, 0, 0);
+                tankList.Add(t);
+            }
+        }
+
+        private void UpdateGameObjects(String message)
+        {
+            String[] details = message.Split(':');
+            for (int i = 0; i < details.Length - 1; i++)
+            {
+                String[] tankDetails = details[i].Split(new char[] { ';', ',' });
+                Tank tank = tankList[i];
+                tank.X = Int32.Parse(tankDetails[1]);
+                tank.Y = Int32.Parse(tankDetails[2]);
+                tank.Direction = Int32.Parse(tankDetails[3]);
+                tank.Health = Int32.Parse(tankDetails[5]);
+                tank.Coins = Int32.Parse(tankDetails[6]);
+                tank.Points = Int32.Parse(tankDetails[7]);
+            }
+            String[] brickDetails = details[details.Length - 1].Split(new char[] { ';', ',' });
+            for (int i = 0; i < brickDetails.Length; i += 3)
+            {
+                Brick brick = brickList[i / 3];
+                brick.Damage = Int32.Parse(brickDetails[i + 2]);
+            }
+        }
+
+        private void HandleCoinPack(String message)
+        {
+            String[] coinDetails = message.Split(new char[] { ':', ',' });
+            CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
+            coinPackList.Add(coin);
+            Thread thread = new Thread(new ThreadStart(coin.StartTimer));
+            thread.Start();
         }
 
     }

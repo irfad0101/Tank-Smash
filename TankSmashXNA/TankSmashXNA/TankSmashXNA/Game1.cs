@@ -45,8 +45,8 @@ namespace TankSmashXNA
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            graphics.PreferredBackBufferWidth = 750;
-            graphics.PreferredBackBufferHeight = 530;
+            graphics.PreferredBackBufferWidth = 600;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             Window.Title = "Tank Game - Client";
@@ -62,7 +62,7 @@ namespace TankSmashXNA
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            gridTexture = Content.Load<Texture2D>("square");
+            gridTexture = Content.Load<Texture2D>("grid");
             brickTexture = Content.Load<Texture2D>("brick");
             waterTexture = Content.Load<Texture2D>("water");
             tankTexture = Content.Load<Texture2D>("Tank");
@@ -95,6 +95,7 @@ namespace TankSmashXNA
                 this.Exit();
 
             // TODO: Add your update logic here
+
             base.Update(gameTime);
         }
 
@@ -104,35 +105,34 @@ namespace TankSmashXNA
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Chocolate);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             DrawBackground();
             DrawBrick();
             DrawWater();
-            //DrawTank();
-            //DrawLifePack();
+            DrawTank();
+            DrawLifePack();
             DrawStone();
-            //DrawCoinPack();
-            //DrawBullet();
+            DrawCoinPack();
+            DrawBullet();
             spriteBatch.End();
             base.Draw(gameTime);
         }
 
         private void DrawBackground()
         {
-            /*Rectangle screenRectangle = new Rectangle(0,0,50,50);
-            spriteBatch.Draw(gridTexture, screenRectangle, Color.White);*/
-            
-            for (int i = 0; i < 10; i++)
+            Rectangle screenRectangle = new Rectangle(0,0,600,600);
+            spriteBatch.Draw(gridTexture, screenRectangle, Color.White);
+            /*for (int i = 0; i < 10; i++)
 			{
                 for (int j = 0; j < 10; j++)
                 {
-                    Rectangle screenRectangle = new Rectangle(52*i+5,52*j+5, 50,50);
+                    Rectangle screenRectangle = new Rectangle(50*i,50*j, 55,55);
                     spriteBatch.Draw(gridTexture, screenRectangle, Color.White);
                 }
-             }
+             }*/
             
         }
 
@@ -141,25 +141,20 @@ namespace TankSmashXNA
             List<Brick> brickList = gameEngine.Bricks;
             foreach (Brick item in brickList)
             {
-                Rectangle brickRectangle = new Rectangle(item.X*52+5, item.Y*52+5, 50, 50);
+                Rectangle brickRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(brickTexture, brickRectangle, Color.White);
             }
-            
-            
         }
-       
 
         private void DrawWater()
         {
             List<WaterPit> waterPitList = gameEngine.WaterPits;
             foreach (WaterPit item in waterPitList)
 	        {
-                Rectangle waterRectangle = new Rectangle(item.X*52+5, item.Y*52+5, 50, 50);
+                Rectangle waterRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(waterTexture, waterRectangle, Color.White);
 	        }
-            
         }
-        
 
         private void DrawTank()
         {
@@ -168,19 +163,15 @@ namespace TankSmashXNA
             List<Tank> tankList = gameEngine.Tanks;
             foreach (Tank item in tankList)
             {
-                Rectangle tankRectangle = new Rectangle(item.X*52+5, item.Y*52+5, 50, 50);
+                Rectangle tankRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
             }
         }
-        
+
         private void DrawLifePack()
         {
             Rectangle lifePackRectangle = new Rectangle(241, 241, 60, 60);
             spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);
-        }
-        private void DrawLifePack(List<LifePack> lifePack)
-        {
-
         }
 
         private void DrawStone()
@@ -188,23 +179,27 @@ namespace TankSmashXNA
             List<Stone> stoneList = gameEngine.Stones;
             foreach (Stone item in stoneList)
             {
-                Rectangle stoneRectangle = new Rectangle(item.X*52+5, item.Y*52+5, 50, 50);
+                Rectangle stoneRectangle = new Rectangle(item.X*60, item.Y*60, 60, 60);
                 spriteBatch.Draw(stoneTexture, stoneRectangle, Color.White);   
             }
             
         }
-       
+
         private void DrawCoinPack()
         {
-            Rectangle coinRectangle = new Rectangle(360, 60, 60, 60);
-            spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
+            List<CoinPack> coinList = gameEngine.CoinPacks;
+            foreach (CoinPack coin in coinList)
+            {
+                Rectangle coinRectangle = new Rectangle(coin.X*60, coin.Y*60, 60, 60);
+                spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
+            }
         }
-       
+
         private void DrawBullet()
         {
             Rectangle bulletRectangle = new Rectangle(375, 240, 30, 60);
             spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);
         }
-        
+
     }
 }
