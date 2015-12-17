@@ -191,6 +191,7 @@ namespace TankSmashXNA
                     default:
                         break;
                 }
+                spriteBatch.Draw(tankTexture, tankRectangle, Color.White);
             }
         }
 
