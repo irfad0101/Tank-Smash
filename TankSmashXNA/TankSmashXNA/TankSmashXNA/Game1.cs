@@ -50,7 +50,7 @@ namespace TankSmashXNA
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            graphics.PreferredBackBufferWidth = 820;
+            graphics.PreferredBackBufferWidth = 900;
             graphics.PreferredBackBufferHeight = 550;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
@@ -75,7 +75,7 @@ namespace TankSmashXNA
             stoneTexture = Content.Load<Texture2D>("stone");
             coinPackTexture = Content.Load<Texture2D>("coins");
             bulletTexture = Content.Load<Texture2D>("bullet");
-            groundTexture = Content.Load<Texture2D>("ground");
+            groundTexture = Content.Load<Texture2D>("battlefield");
             upTankTexture = Content.Load<Texture2D>("upTank");
             downTankTexture = Content.Load<Texture2D>("downTank");
             leftTankTexture = Content.Load<Texture2D>("leftTank");
@@ -135,7 +135,7 @@ namespace TankSmashXNA
 
         private void DrawBackground()
         {
-            Rectangle groundRectangle = new Rectangle(0,0,820,550);
+            Rectangle groundRectangle = new Rectangle(0,0,900,550);
             spriteBatch.Draw(groundTexture, groundRectangle, Color.White);
             for (int i = 0; i < 10; i++)
 			{
