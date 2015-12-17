@@ -75,6 +75,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI.cs" />
     <Compile Include="Entity\Brick.cs" />
     <Compile Include="Entity\Bullet.cs" />
     <Compile Include="Entity\CoinPack.cs" />

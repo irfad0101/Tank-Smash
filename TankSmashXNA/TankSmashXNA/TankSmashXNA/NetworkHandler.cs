@@ -28,8 +28,9 @@ namespace TankSmashXNA
             return netHandler;
         }
 
-        public void Send(String message)
+        public void Send(Object mesg)
         {
+            String message = (String)mesg;
             try
             {
                 sender = new TcpClient();
