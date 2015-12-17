@@ -20,18 +20,22 @@ namespace TankSmashXNA
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D gridTexture;
-        Texture2D brickTexture;
+        Texture2D brick100Texture;
+        Texture2D brick75Texture;
+        Texture2D brick50Texture;
+        Texture2D brick25Texture;
         Texture2D waterTexture;
-        Texture2D tankTexture;
+        //Texture2D tankTexture;
         Texture2D lifePackTexture;
         Texture2D stoneTexture;
         Texture2D coinPackTexture;
-        Texture2D bulletTexture;
+        Texture2D upBulletTexture, downBulletTexture,leftBulletTexture, rightBulletTexture;
         Texture2D groundTexture;
-        Texture2D leftTankTexture;
-        Texture2D rightTankTexture;
-        Texture2D upTankTexture;
-        Texture2D downTankTexture;
+        Texture2D Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture;
+        Texture2D Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture;
+        Texture2D Tank1STexture,Tank2STexture, Tank3STexture, Tank4STexture;
+        Texture2D Tank1NTexture,Tank2NTexture, Tank3NTexture, Tank4NTexture;
+        Texture2D[,] tankTexture;
         GameEngine gameEngine;
 
 
@@ -68,18 +72,36 @@ namespace TankSmashXNA
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gridTexture = Content.Load<Texture2D>("square");
-            brickTexture = Content.Load<Texture2D>("brick");
+            brick100Texture = Content.Load<Texture2D>("brick100");
+            brick75Texture = Content.Load<Texture2D>("brick75");
+            brick50Texture = Content.Load<Texture2D>("brick50");
+            brick25Texture = Content.Load<Texture2D>("brick25");
             waterTexture = Content.Load<Texture2D>("water");
-            tankTexture = Content.Load<Texture2D>("Tank");
             lifePackTexture = Content.Load<Texture2D>("LifePack");
             stoneTexture = Content.Load<Texture2D>("stone");
             coinPackTexture = Content.Load<Texture2D>("coins");
-            bulletTexture = Content.Load<Texture2D>("bullet");
+            upBulletTexture = Content.Load<Texture2D>("upBullet");
+            downBulletTexture = Content.Load<Texture2D>("downBullet");
+            leftBulletTexture = Content.Load<Texture2D>("leftBullet");
+            rightBulletTexture = Content.Load<Texture2D>("rightBullet");
             groundTexture = Content.Load<Texture2D>("battlefield");
-            upTankTexture = Content.Load<Texture2D>("upTank");
-            downTankTexture = Content.Load<Texture2D>("downTank");
-            leftTankTexture = Content.Load<Texture2D>("leftTank");
-            rightTankTexture = Content.Load<Texture2D>("rightTank");
+            Tank1ETexture = Content.Load<Texture2D>("Tank1E");
+            Tank1WTexture = Content.Load<Texture2D>("Tank1W");
+            Tank1STexture = Content.Load<Texture2D>("Tank1S");
+            Tank1NTexture = Content.Load<Texture2D>("Tank1N");
+            Tank2ETexture = Content.Load<Texture2D>("Tank2E");
+            Tank2WTexture = Content.Load<Texture2D>("Tank2W");
+            Tank2STexture = Content.Load<Texture2D>("Tank2S");
+            Tank2NTexture = Content.Load<Texture2D>("Tank2N");
+            Tank3ETexture = Content.Load<Texture2D>("Tank3E");
+            Tank3WTexture = Content.Load<Texture2D>("Tank3W");
+            Tank3STexture = Content.Load<Texture2D>("Tank3S");
+            Tank3NTexture = Content.Load<Texture2D>("Tank3N");
+            Tank4ETexture = Content.Load<Texture2D>("Tank4E");
+            Tank4WTexture = Content.Load<Texture2D>("Tank4W");
+            Tank4STexture = Content.Load<Texture2D>("Tank4S");
+            Tank4NTexture = Content.Load<Texture2D>("Tank4N");
+            tankTexture = new Texture2D[,] {{ Tank1NTexture, Tank2NTexture, Tank3NTexture, Tank4NTexture }, { Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture }, { Tank1STexture, Tank2STexture, Tank3STexture, Tank4STexture }, { Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture }  };
 
             // TODO: use this.Content to load your game content here
         }
@@ -150,11 +172,27 @@ namespace TankSmashXNA
 
         private void DrawBrick()
         {
+            
             List<Brick> brickList = gameEngine.Bricks;
             foreach (Brick item in brickList)
             {
-                Rectangle brickRectangle = new Rectangle(item.X*54+5, item.Y*54+5, 50, 50);
-                spriteBatch.Draw(brickTexture, brickRectangle, Color.White);
+                Rectangle brickRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
+                switch (item.Damage)
+                {
+                    case 0:
+                        spriteBatch.Draw(brick100Texture, brickRectangle, Color.White);break;
+                    case 1:
+                        spriteBatch.Draw(brick75Texture, brickRectangle, Color.White);break;
+                    case 2:
+                        spriteBatch.Draw(brick50Texture, brickRectangle, Color.White); break;
+                    case 3:
+                        spriteBatch.Draw(brick25Texture, brickRectangle, Color.White); break;
+                    default:
+                        break;
+                }
+                /*Rectangle brickRectangle = new Rectangle(item.X*54+5, item.Y*54+5, 50, 50);
+                spriteBatch.Draw(brick100Texture, brickRectangle, Color.White);*/
+                
             }
         }
 
@@ -174,23 +212,8 @@ namespace TankSmashXNA
             foreach (Tank item in tankList)
             {
                 Rectangle tankRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
-                switch (item.Direction)
-                {
-                    case 0:
-                        spriteBatch.Draw(upTankTexture, tankRectangle, Color.White);
-                        break;
-                    case 1:
-                        spriteBatch.Draw(rightTankTexture, tankRectangle, Color.White);
-                        break;
-                    case 2:
-                        spriteBatch.Draw(downTankTexture, tankRectangle, Color.White);
-                        break;
-                    case 3:
-                        spriteBatch.Draw(leftTankTexture, tankRectangle, Color.White);
-                        break;
-                    default:
-                        break;
-                }
+                spriteBatch.Draw(tankTexture[item.Direction,item.getIndex()], tankRectangle, Color.White);
+                        
             }
         }
 
@@ -227,8 +250,28 @@ namespace TankSmashXNA
 
         private void DrawBullet()
         {
-            Rectangle bulletRectangle = new Rectangle(491, 491, 50, 50);
-            spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);
+            List<Bullet> bulletList = gameEngine.Bullerts;
+            foreach (Bullet bullet in bulletList)
+            {
+                Rectangle bulletRectangle = new Rectangle(bullet.X * 54 + 5, bullet.Y * 54 + 5, 50, 50);
+                
+                switch (bullet.Direction)
+                {
+                    case 0:
+                        spriteBatch.Draw(upBulletTexture, bulletRectangle, Color.White);break;
+                    case 1:
+                        spriteBatch.Draw(rightBulletTexture, bulletRectangle, Color.White); break;
+                    case 2:
+                        spriteBatch.Draw(downBulletTexture, bulletRectangle, Color.White); break;
+                    case 3:
+                        spriteBatch.Draw(leftBulletTexture, bulletRectangle, Color.White); break;
+                    default:
+                        break;
+
+                }
+            }
+            /*Rectangle bulletRectangle = new Rectangle(491, 491, 50, 50);
+            spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);*/
         }
 
     }

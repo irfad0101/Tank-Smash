@@ -42,6 +42,9 @@ namespace TankSmashXNA.Entity
             get { return name; }
             set { name = value; }
         }
+        public int getIndex(){
+            return Int32.Parse(name.Substring(1));
+        }
 
         public Tank(String name, int x, int y, int direction, int health, int points, int coins) : base(x,y)
         {
