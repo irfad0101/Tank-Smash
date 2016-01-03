@@ -16,6 +16,13 @@ namespace TankSmashXNA.Entity
             set { lifeTime = value; }
         }
 
+        private Thread runningThread;
+        public Thread RunningThread
+        {
+            get { return runningThread; }
+            set { runningThread = value; }
+        }
+
         private List<LifePack> lifePackList;
 
         public LifePack(int x, int y, int lifeTime,List<LifePack> lifeList) : base(x, y)
@@ -26,7 +33,11 @@ namespace TankSmashXNA.Entity
 
         public void StartTimer()
         {
-            Thread.Sleep(LifeTime);
+            try
+            {
+                Thread.Sleep(LifeTime);
+            }
+            catch (ThreadInterruptedException) { }
             if (lifePackList.Contains(this))
             {
                 lifePackList.Remove(this);

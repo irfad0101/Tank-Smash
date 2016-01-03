@@ -12,6 +12,7 @@ namespace TankSmashXNA
         private static GameEngine engine = new GameEngine();
         private const int LINE_FEED_LENGTH = 2;
         private GameEntity[,] map;
+        private GameEntity[,] collectabilities;
         private int myTankIndex;
         
         private List<Tank> tankList;
@@ -66,6 +67,7 @@ namespace TankSmashXNA
             lifePackList = new List<LifePack>();
             bulletList = new List<Bullet>();
             map = new GameEntity[10,10];
+            collectabilities = new GameEntity[10, 10];
         }
 
         public static GameEngine GetInstance()
@@ -161,6 +163,21 @@ namespace TankSmashXNA
                     Bullet bullet = new Bullet(tank.X, tank.Y, tank.Direction);
                     bulletList.Add(bullet);
                 }
+                if (collectabilities[tank.X, tank.Y] != null)
+                {
+                    if (collectabilities[tank.X, tank.Y].GetType() == typeof(CoinPack))
+                    {
+                        CoinPack coin = (CoinPack)collectabilities[tank.X, tank.Y];
+                        collectabilities[tank.X, tank.Y] = null;
+                        coin.RunningThread.Interrupt();
+                    }
+                    else if (collectabilities[tank.X, tank.Y].GetType() == typeof(LifePack))
+                    {
+                        LifePack coin = (LifePack)collectabilities[tank.X, tank.Y];
+                        collectabilities[tank.X, tank.Y] = null;
+                        coin.RunningThread.Interrupt();
+                    }
+                }
             }
             String[] brickDetails = details[details.Length - 1].Split(new char[] { ';', ',' });
             for (int i = 0; i < brickDetails.Length; i += 3)
@@ -175,7 +192,9 @@ namespace TankSmashXNA
             String[] coinDetails = message.Split(new char[] { ':', ',' });
             CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
             coinPackList.Add(coin);
+            collectabilities[coin.X, coin.Y] = coin;
             Thread thread = new Thread(new ThreadStart(coin.StartTimer));
+            coin.RunningThread = thread;
             thread.Start();
         }
 
@@ -184,7 +203,9 @@ namespace TankSmashXNA
             String[] lifeDetails = message.Split(new char[] { ':', ',' });
             LifePack life = new LifePack(Int32.Parse(lifeDetails[0]), Int32.Parse(lifeDetails[1]), Int32.Parse(lifeDetails[2]), lifePackList);
             lifePackList.Add(life);
+            collectabilities[life.X, life.Y] = life;
             Thread thread = new Thread(new ThreadStart(life.StartTimer));
+            life.RunningThread = thread;
             thread.Start();
         }
 

@@ -32,9 +32,20 @@ namespace TankSmashXNA.Entity
             this.coinPackList = coinList;
         }
 
+        private Thread runningThread;
+        public Thread RunningThread
+        {
+            get { return runningThread; }
+            set { runningThread = value; }
+        }
+
         public void StartTimer()
         {
-            Thread.Sleep(LifeTime);
+            try
+            {
+                Thread.Sleep(LifeTime);
+            }
+            catch (ThreadInterruptedException) { }
             if (coinPackList.Contains(this))
             {
                 coinPackList.Remove(this);
