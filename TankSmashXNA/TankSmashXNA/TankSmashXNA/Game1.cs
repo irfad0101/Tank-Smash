@@ -80,10 +80,10 @@ namespace TankSmashXNA
             lifePackTexture = Content.Load<Texture2D>("LifePack");
             stoneTexture = Content.Load<Texture2D>("stone");
             coinPackTexture = Content.Load<Texture2D>("coins");
-            upBulletTexture = Content.Load<Texture2D>("upBullet");
-            downBulletTexture = Content.Load<Texture2D>("downBullet");
-            leftBulletTexture = Content.Load<Texture2D>("leftBullet");
-            rightBulletTexture = Content.Load<Texture2D>("rightBullet");
+            upBulletTexture = Content.Load<Texture2D>("bullet_up");
+            downBulletTexture = Content.Load<Texture2D>("bullet_down");
+            leftBulletTexture = Content.Load<Texture2D>("bullet_left");
+            rightBulletTexture = Content.Load<Texture2D>("bullet_right");
             groundTexture = Content.Load<Texture2D>("battlefield");
             Tank1ETexture = Content.Load<Texture2D>("Tank1E");
             Tank1WTexture = Content.Load<Texture2D>("Tank1W");
