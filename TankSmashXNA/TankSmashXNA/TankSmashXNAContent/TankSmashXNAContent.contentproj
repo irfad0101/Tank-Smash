@@ -216,11 +216,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="bullet_left.png">
-      <Name>bullet_left</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="bullet_right.png">
       <Name>bullet_right</Name>
       <Importer>TextureImporter</Importer>
@@ -228,6 +223,13 @@
     </Compile>
     <Compile Include="bullet_up.png">
       <Name>bullet_up</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bullet_left.png">
+      <Name>bullet_left</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
