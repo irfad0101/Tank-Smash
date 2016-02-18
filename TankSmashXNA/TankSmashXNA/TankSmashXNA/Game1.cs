@@ -250,6 +250,7 @@ namespace TankSmashXNA
 
         private void DrawBullet()
         {
+            // draw relevent texture of bullet according to direction
             List<Bullet> bulletList = gameEngine.Bullerts;
             foreach (Bullet bullet in bulletList)
             {
