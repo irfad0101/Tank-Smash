@@ -20,5 +20,24 @@ namespace TankSmashXNA.Entity
             this.Direction = direction;
         }
 
+        public void updatePosition()
+        {
+            switch (direction)
+            {
+                case 0:
+                    Y -= 2;
+                    break;
+                case 1:
+                    X += 2;
+                    break;
+                case 2:
+                    Y += 2;
+                    break;
+                case 3:
+                    X -= 2;
+                    break;
+            }
+        }
+
     }
 }
