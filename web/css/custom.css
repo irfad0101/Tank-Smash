@@ -1,43 +1,55 @@
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body{
-	padding-top: 70px;
-	padding-bottom: 100px;
-	margin-bottom: 60px;
-  background: url('../img/backgroud.jpg') no-repeat center center fixed;
+    padding-top: 70px;
+    padding-bottom: 100px;
+    margin-bottom: 60px;
+    background: url('../img/background.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-  color:#fff;
+    color:#fff;
     background-color:#333;
-    opacity: 0.4;
 }
 
 .carousel{
-	padding-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 #rows{
-	padding-top: 20px;
+    padding-top: 20px;
 }
 
 #brand-image{
-	height: 40px;
+    height: 40px;
 }
 
 .navbar-brand{
-	padding: 5px;
+    padding: 5px;
+}
+
+.navbar-custom{
+    background-image: url("../img/navbg.jpg");
+}
+
+.navbar-default .navbar-nav > li > a:hover, 
+.navbar-default .navbar-nav > li > a:focus {color: #f1f1f1; background-color: #1C2C3C;}
+
+@media only screen and (max-width: 766px) {
+.collapsing, .in {background-color: #f7f7f7;}
+.collapsing ul li a, .in ul li a {color: #555!important;}
+.collapsing ul li a:hover, .in ul li a:hover {color: #f1f1f1!important;}
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-color: #d6d6d6;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #d6d6d6;
 }
