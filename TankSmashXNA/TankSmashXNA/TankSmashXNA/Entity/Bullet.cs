@@ -15,27 +15,57 @@ namespace TankSmashXNA.Entity
             set { direction = value; }
         }
 
-        public Bullet(int x, int y, int directoin) : base(x, y)
+        private GameEntity[,] map;
+        private List<Bullet> bulletList;
+
+        public Bullet(int x, int y, int directoin, List<Bullet> bullets, GameEntity[,] map) : base(x, y)
         {
-            this.Direction = direction;
+            this.direction = directoin;
+            this.bulletList = bullets;
+            this.map = map;
         }
 
         public void updatePosition()
         {
-            switch (direction)
+            while (true)
             {
-                case 0:
-                    Y -= 2;
-                    break;
-                case 1:
-                    X += 2;
-                    break;
-                case 2:
-                    Y += 2;
-                    break;
-                case 3:
-                    X -= 2;
-                    break;
+                switch (direction)
+                {
+                    case 0:
+                        Y -= 1;
+                        break;
+                    case 1:
+                        X += 1;
+                        break;
+                    case 2:
+                        Y += 1;
+                        break;
+                    case 3:
+                        X -= 1;
+                        break;
+                }
+                try
+                {
+                    if (map[X, Y] != null)
+                    {
+                        if (map[X, Y].GetType() == typeof(Tank) || map[X, Y].GetType() == typeof(Brick) || map[X, Y].GetType() == typeof(Stone)) 
+                        {
+                            bulletList.Remove(this);    // remove bullet if an obstacle met
+                        }
+                        else
+                        {
+                            Thread.Sleep(333);
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(333);
+                    }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    bulletList.Remove(this);
+                }
             }
         }
 

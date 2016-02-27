@@ -43,12 +43,23 @@ namespace TankSmashXNA.Entity
         {
             try
             {
-                Thread.Sleep(LifeTime);
+                if (LifeTime == 0)
+                {
+                    Thread.Sleep(System.Threading.Timeout.Infinite);
+                }
+                else
+                {
+                    Thread.Sleep(LifeTime);
+                }
             }
             catch (ThreadInterruptedException) { }
             if (coinPackList.Contains(this))
             {
                 coinPackList.Remove(this);
+                if (lifeTime == 0)
+                {
+                    Console.WriteLine("Coin pack from some tank removed");
+                }
             }
         }
 

@@ -11,8 +11,8 @@ namespace TankSmashXNA
     {
         private static GameEngine engine = new GameEngine();
         private const int LINE_FEED_LENGTH = 2;
-        private GameEntity[,] map;
-        private GameEntity[,] collectabilities;
+        public GameEntity[,] map;
+        public GameEntity[,] collectabilities;
         private int myTankIndex;
         
         private List<Tank> tankList;
@@ -102,6 +102,7 @@ namespace TankSmashXNA
 
         private void InitializeMap(String message)
         {
+            // first set of details server send after join game. decode the message and add details of bricks, water pits and stones to map and create entities
             String[] worlddetails = message.Split(':');
             myTankIndex = Int32.Parse(worlddetails[0].Substring(1));
             String[] bricks = worlddetails[1].Split(new char[] { ';', ',' });
@@ -129,6 +130,7 @@ namespace TankSmashXNA
 
         private void InitializeTanks(String message)
         {
+            // decode and add details of tanks to map and tank entities
             String[] tanks = message.Split(':');
             foreach (String tank in tanks)
             {
@@ -138,18 +140,20 @@ namespace TankSmashXNA
                 map[t.X, t.Y] = t;
             }
             AI ai = AI.getInstance();
-            ai.setParameters(tankList[myTankIndex], map);
+            ai.setParameters(tankList[myTankIndex], map, collectabilities);
             Thread thread = new Thread(new ThreadStart(ai.getNextMove));
             thread.Start();
         }
 
         private void UpdateGameObjects(String message)
         {
+            // decode periodic updates
             String[] details = message.Split(':');
             for (int i = 0; i < details.Length - 1; i++)
             {
-                String[] tankDetails = details[i].Split(new char[] { ';', ',' });
+                String[] tankDetails = details[i].Split(new char[] { ';', ',' });   // tank details
                 Tank tank = tankList[i];
+                int previousHealth = tank.Health;
                 map[tank.X, tank.Y] = null;
                 tank.X = Int32.Parse(tankDetails[1]);
                 tank.Y = Int32.Parse(tankDetails[2]);
@@ -158,12 +162,14 @@ namespace TankSmashXNA
                 tank.Coins = Int32.Parse(tankDetails[6]);
                 tank.Points = Int32.Parse(tankDetails[7]);
                 map[tank.X, tank.Y] = tank;
-                if (tankDetails[4].Equals("1"))
+                if (tankDetails[4].Equals("1"))     // if a tank has fire a bullet create bullet entity
                 {
-                    Bullet bullet = new Bullet(tank.X, tank.Y, tank.Direction);
+                    Bullet bullet = new Bullet(tank.X, tank.Y, tank.Direction,bulletList,map);
                     bulletList.Add(bullet);
+                    Thread thread = new Thread(new ThreadStart(bullet.updatePosition));
+                    thread.Start();
                 }
-                if (collectabilities[tank.X, tank.Y] != null)
+                if (tank.Health>0 && collectabilities[tank.X, tank.Y] != null)      // check whether a tank has taken a coin pack or life pack and remove it
                 {
                     if (collectabilities[tank.X, tank.Y].GetType() == typeof(CoinPack))
                     {
@@ -178,17 +184,38 @@ namespace TankSmashXNA
                         coin.RunningThread.Interrupt();
                     }
                 }
+                if (previousHealth > 0 && tank.Health == 0)
+                {
+                    // When above 2 conditions becomes true the tank has just died. So remove the tank from map and spawn a coinpack
+                    Console.WriteLine("tank "+tank.getIndex()+" just died");
+                    map[tank.X, tank.Y] = null;
+                    CoinPack coin = new CoinPack(tank.X, tank.Y, tank.Coins, 0, coinPackList);
+                    coinPackList.Add(coin);
+                    collectabilities[coin.X, coin.Y] = coin;
+                    Thread thread = new Thread(new ThreadStart(coin.StartTimer));
+                    coin.RunningThread = thread;
+                    thread.Start();
+                }
             }
-            String[] brickDetails = details[details.Length - 1].Split(new char[] { ';', ',' });
+            String[] brickDetails = details[details.Length - 1].Split(new char[] { ';', ',' });     // brick details
             for (int i = 0; i < brickDetails.Length; i += 3)
             {
                 Brick brick = brickList[i / 3];
                 brick.Damage = Int32.Parse(brickDetails[i + 2]);
+                if (brick.Damage == 4)
+                {
+                    map[brick.X, brick.Y] = null;
+                    if (brickList.Contains(brick))
+                    {
+                        brickList.Remove(brick);
+                    }
+                }
             }
         }
 
         private void HandleCoinPack(String message)
         {
+            // decode details of coin pack and add to map
             String[] coinDetails = message.Split(new char[] { ':', ',' });
             CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
             coinPackList.Add(coin);
@@ -200,6 +227,7 @@ namespace TankSmashXNA
 
         private void HandleLifePack(String message)
         {
+            // decode details of life pack and add to map
             String[] lifeDetails = message.Split(new char[] { ':', ',' });
             LifePack life = new LifePack(Int32.Parse(lifeDetails[0]), Int32.Parse(lifeDetails[1]), Int32.Parse(lifeDetails[2]), lifePackList);
             lifePackList.Add(life);

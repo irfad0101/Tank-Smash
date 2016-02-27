@@ -211,9 +211,11 @@ namespace TankSmashXNA
             List<Tank> tankList = gameEngine.Tanks;
             foreach (Tank item in tankList)
             {
-                Rectangle tankRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
-                spriteBatch.Draw(tankTexture[item.Direction,item.getIndex()], tankRectangle, Color.White);
-                        
+                if (item.Health > 0)
+                {
+                    Rectangle tankRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
+                    spriteBatch.Draw(tankTexture[item.Direction, item.getIndex()], tankRectangle, Color.White);
+                }
             }
         }
 
