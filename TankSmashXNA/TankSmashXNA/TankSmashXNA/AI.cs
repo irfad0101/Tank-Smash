@@ -34,6 +34,8 @@ namespace TankSmashXNA
                     node.currentX = i;
                     node.currentY = j;
                     graph[i, j] = node;
+                    graph[i, j].parentX = -1;
+                    graph[i, j].parentY = -1;
                 }
             }
         }
@@ -63,7 +65,7 @@ namespace TankSmashXNA
                 {
                     SearchFor(typeof(LifePack));
                 }
-                /*int tankInRangeDir = GetTankInRangeDir();
+                int tankInRangeDir = GetTankInRangeDir();
                 Console.WriteLine("Tank in range: " + tankInRangeDir);
                 if (tankInRangeDir > 0)
                 {
@@ -79,10 +81,10 @@ namespace TankSmashXNA
                         thrd.Start(commands[tankInRangeDir]);
                         commandSend = true;
                     }
-                }*/
+                }
                 else
                 {
-                    SearchFor(typeof(CoinPack));        // search for life pack
+                    SearchFor(typeof(CoinPack));        // search for coin pack
                 }
                 if (!commandSend)
                 {
@@ -108,7 +110,7 @@ namespace TankSmashXNA
                 queue.RemoveAt(0);
                 for (int i = 0; i < 4; i++)     // loop to visit child nodes
                 {
-                    Node child = gotoChild(node,i);
+                    Node child = gotoChild(node,i+mytank.Direction);
                     if (child != null && !discovered[child.currentX,child.currentY])  // process child if not already discovered and not null
                     {
                         if (map[child.currentX, child.currentY] == null)
@@ -139,6 +141,10 @@ namespace TankSmashXNA
             // given current node and direction of next child return the child node if it is valid
             int nextX = current.currentX;
             int nextY = current.currentY;
+            if (direction > 3)
+            {
+                direction -= 4;
+            }
             switch (direction)
             {
                 case 0:
@@ -165,12 +171,22 @@ namespace TankSmashXNA
             // called when a collectible has found. Trace back the path and set the cordinates for next move
             int currentX = start.currentX;
             int currentY = start.currentY;
-            //Console.Write("Trace: (" + currentX + "," + currentY + ") -> ");
-            while (graph[currentX, currentY].parentX != mytank.X || graph[currentX, currentY].parentY != mytank.Y)
+            //Console.WriteLine("My tank: ("+mytank.X+","+mytank.Y+")");
+            //Console.Write("Trace: (" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ") -> ");
+            try
             {
-                currentX = graph[currentX, currentY].parentX;
-                currentY = graph[currentX, currentY].parentY;
-                //Console.Write("(" + currentX + "," + currentY + ") -> ");
+                while ((graph[currentX, currentY].parentX != mytank.X) || (graph[currentX, currentY].parentY != mytank.Y))
+                {
+                    int tempX = currentX;
+                    currentX = graph[currentX, currentY].parentX;
+                    currentY = graph[tempX, currentY].parentY;
+                    //Console.Write("(" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ")-> ");
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                currentX = -1;
+                currentY = -1;
             }
             //Console.WriteLine("(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ")");
             nextX = currentX;
@@ -269,6 +285,18 @@ namespace TankSmashXNA
                 Thread thread = new Thread(new ParameterizedThreadStart(netHandler.Send));
                 thread.Start(commands[4]);
                 Thread.Sleep(300);
+            }
+        }
+
+        private void resetGraph()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    graph[i, j].parentX = -1;
+                    graph[i, j].parentY = -1;
+                }
             }
         }
 

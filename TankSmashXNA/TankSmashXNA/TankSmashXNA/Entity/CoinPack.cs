@@ -20,16 +20,27 @@ namespace TankSmashXNA.Entity
         public int LifeTime
         {
             get { return lifeTime; }
-            set { lifeTime = value; }
+            set {
+                    if (value == 0)
+                    {
+                        lifeTime = System.Threading.Timeout.Infinite;
+                    }
+                    else
+                    {
+                        lifeTime = value; 
+                    }
+                }
         }
 
         private List<CoinPack> coinPackList;
+        private GameEntity[,] collectabilities;
 
-        public CoinPack(int x, int y,int Amount,int lifeTime,List<CoinPack> coinList) : base(x, y)
+        public CoinPack(int x, int y,int Amount,int lifeTime,List<CoinPack> coinList,GameEntity[,] collect) : base(x, y)
         {
             this.Amount = amount;
             this.LifeTime = lifeTime;
             this.coinPackList = coinList;
+            this.collectabilities = collect;
         }
 
         private Thread runningThread;
@@ -43,24 +54,14 @@ namespace TankSmashXNA.Entity
         {
             try
             {
-                if (LifeTime == 0)
-                {
-                    Thread.Sleep(System.Threading.Timeout.Infinite);
-                }
-                else
-                {
                     Thread.Sleep(LifeTime);
-                }
             }
             catch (ThreadInterruptedException) { }
             if (coinPackList.Contains(this))
             {
                 coinPackList.Remove(this);
-                if (lifeTime == 0)
-                {
-                    Console.WriteLine("Coin pack from some tank removed");
-                }
             }
+            collectabilities[X, Y] = null;
         }
 
     }

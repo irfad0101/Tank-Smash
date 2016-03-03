@@ -24,11 +24,13 @@ namespace TankSmashXNA.Entity
         }
 
         private List<LifePack> lifePackList;
+        private GameEntity[,] collectabilities;
 
-        public LifePack(int x, int y, int lifeTime,List<LifePack> lifeList) : base(x, y)
+        public LifePack(int x, int y, int lifeTime,List<LifePack> lifeList, GameEntity[,] collect) : base(x, y)
         {
             this.LifeTime = lifeTime;
             this.lifePackList = lifeList;
+            this.collectabilities = collect;
         }
 
         public void StartTimer()
@@ -42,6 +44,7 @@ namespace TankSmashXNA.Entity
             {
                 lifePackList.Remove(this);
             }
+            collectabilities[X, Y] = null;
         }
 
     }

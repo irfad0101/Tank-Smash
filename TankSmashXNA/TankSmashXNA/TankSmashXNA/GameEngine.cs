@@ -11,8 +11,8 @@ namespace TankSmashXNA
     {
         private static GameEngine engine = new GameEngine();
         private const int LINE_FEED_LENGTH = 2;
-        public GameEntity[,] map;
-        public GameEntity[,] collectabilities;
+        private GameEntity[,] map;
+        private GameEntity[,] collectabilities;
         private int myTankIndex;
         
         private List<Tank> tankList;
@@ -161,7 +161,10 @@ namespace TankSmashXNA
                 tank.Health = Int32.Parse(tankDetails[5]);
                 tank.Coins = Int32.Parse(tankDetails[6]);
                 tank.Points = Int32.Parse(tankDetails[7]);
-                map[tank.X, tank.Y] = tank;
+                if (tank.Health > 0)        // add the tank to map only if it is alive
+                {
+                    map[tank.X, tank.Y] = tank;
+                }
                 if (tankDetails[4].Equals("1"))     // if a tank has fire a bullet create bullet entity
                 {
                     Bullet bullet = new Bullet(tank.X, tank.Y, tank.Direction,bulletList,map);
@@ -174,14 +177,12 @@ namespace TankSmashXNA
                     if (collectabilities[tank.X, tank.Y].GetType() == typeof(CoinPack))
                     {
                         CoinPack coin = (CoinPack)collectabilities[tank.X, tank.Y];
-                        collectabilities[tank.X, tank.Y] = null;
                         coin.RunningThread.Interrupt();
                     }
                     else if (collectabilities[tank.X, tank.Y].GetType() == typeof(LifePack))
                     {
-                        LifePack coin = (LifePack)collectabilities[tank.X, tank.Y];
-                        collectabilities[tank.X, tank.Y] = null;
-                        coin.RunningThread.Interrupt();
+                        LifePack life = (LifePack)collectabilities[tank.X, tank.Y];
+                        life.RunningThread.Interrupt();
                     }
                 }
                 if (previousHealth > 0 && tank.Health == 0)
@@ -189,7 +190,7 @@ namespace TankSmashXNA
                     // When above 2 conditions becomes true the tank has just died. So remove the tank from map and spawn a coinpack
                     Console.WriteLine("tank "+tank.getIndex()+" just died");
                     map[tank.X, tank.Y] = null;
-                    CoinPack coin = new CoinPack(tank.X, tank.Y, tank.Coins, 0, coinPackList);
+                    CoinPack coin = new CoinPack(tank.X, tank.Y, tank.Coins, 0, coinPackList,collectabilities);
                     coinPackList.Add(coin);
                     collectabilities[coin.X, coin.Y] = coin;
                     Thread thread = new Thread(new ThreadStart(coin.StartTimer));
@@ -205,10 +206,6 @@ namespace TankSmashXNA
                 if (brick.Damage == 4)
                 {
                     map[brick.X, brick.Y] = null;
-                    if (brickList.Contains(brick))
-                    {
-                        brickList.Remove(brick);
-                    }
                 }
             }
         }
@@ -217,7 +214,7 @@ namespace TankSmashXNA
         {
             // decode details of coin pack and add to map
             String[] coinDetails = message.Split(new char[] { ':', ',' });
-            CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks);
+            CoinPack coin = new CoinPack(Int32.Parse(coinDetails[0]), Int32.Parse(coinDetails[1]), Int32.Parse(coinDetails[3]), Int32.Parse(coinDetails[2]),this.CoinPacks,collectabilities);
             coinPackList.Add(coin);
             collectabilities[coin.X, coin.Y] = coin;
             Thread thread = new Thread(new ThreadStart(coin.StartTimer));
@@ -229,7 +226,7 @@ namespace TankSmashXNA
         {
             // decode details of life pack and add to map
             String[] lifeDetails = message.Split(new char[] { ':', ',' });
-            LifePack life = new LifePack(Int32.Parse(lifeDetails[0]), Int32.Parse(lifeDetails[1]), Int32.Parse(lifeDetails[2]), lifePackList);
+            LifePack life = new LifePack(Int32.Parse(lifeDetails[0]), Int32.Parse(lifeDetails[1]), Int32.Parse(lifeDetails[2]), lifePackList,collectabilities);
             lifePackList.Add(life);
             collectabilities[life.X, life.Y] = life;
             Thread thread = new Thread(new ThreadStart(life.StartTimer));
