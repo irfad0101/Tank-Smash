@@ -20,16 +20,7 @@ namespace TankSmashXNA.Entity
         public int LifeTime
         {
             get { return lifeTime; }
-            set {
-                    if (value == 0)
-                    {
-                        lifeTime = System.Threading.Timeout.Infinite;
-                    }
-                    else
-                    {
-                        lifeTime = value; 
-                    }
-                }
+            set { lifeTime = value; }
         }
 
         private List<CoinPack> coinPackList;
@@ -37,7 +28,7 @@ namespace TankSmashXNA.Entity
 
         public CoinPack(int x, int y,int Amount,int lifeTime,List<CoinPack> coinList,GameEntity[,] collect) : base(x, y)
         {
-            this.Amount = amount;
+            this.amount = Amount;
             this.LifeTime = lifeTime;
             this.coinPackList = coinList;
             this.collectabilities = collect;

@@ -56,13 +56,14 @@ namespace TankSmashXNA
 
         public void getNextMove()
         {
-            while (true)    // loop for thrad
+            while (Game1.currentState==Game1.GameState.playing && mytank.Health>0)    // loop for thrad
             {
                 nextX = -1;
                 nextY = -1;
                 bool commandSend = false;
                 if (mytank.Health < 100)    // if health is not full search for life pack
                 {
+                    Console.WriteLine("Searching for life pack...");
                     SearchFor(typeof(LifePack));
                 }
                 int tankInRangeDir = GetTankInRangeDir();
@@ -84,6 +85,7 @@ namespace TankSmashXNA
                 }
                 else
                 {
+                    Console.WriteLine("Searching for Coin pack...");
                     SearchFor(typeof(CoinPack));        // search for coin pack
                 }
                 if (!commandSend)
@@ -100,6 +102,7 @@ namespace TankSmashXNA
             // use BFS search to find nearest coin packs or life packs
             List<Node> queue = new List<Node>();
             discovered = new bool[10, 10];
+            resetGraph();
             Node node = graph[mytank.X,mytank.Y];
             queue.Add(node);
             discovered[mytank.X, mytank.Y] = true;
@@ -110,7 +113,7 @@ namespace TankSmashXNA
                 queue.RemoveAt(0);
                 for (int i = 0; i < 4; i++)     // loop to visit child nodes
                 {
-                    Node child = gotoChild(node,i+mytank.Direction);
+                    Node child = gotoChild(node,i);
                     if (child != null && !discovered[child.currentX,child.currentY])  // process child if not already discovered and not null
                     {
                         if (map[child.currentX, child.currentY] == null)
@@ -141,10 +144,6 @@ namespace TankSmashXNA
             // given current node and direction of next child return the child node if it is valid
             int nextX = current.currentX;
             int nextY = current.currentY;
-            if (direction > 3)
-            {
-                direction -= 4;
-            }
             switch (direction)
             {
                 case 0:
@@ -172,7 +171,7 @@ namespace TankSmashXNA
             int currentX = start.currentX;
             int currentY = start.currentY;
             //Console.WriteLine("My tank: ("+mytank.X+","+mytank.Y+")");
-            //Console.Write("Trace: (" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ") -> ");
+            Console.Write("Trace: (" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ") -> ");
             try
             {
                 while ((graph[currentX, currentY].parentX != mytank.X) || (graph[currentX, currentY].parentY != mytank.Y))
@@ -180,7 +179,7 @@ namespace TankSmashXNA
                     int tempX = currentX;
                     currentX = graph[currentX, currentY].parentX;
                     currentY = graph[tempX, currentY].parentY;
-                    //Console.Write("(" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ")-> ");
+                    Console.Write("(" + currentX + "," + currentY + ") P:(" + graph[currentX, currentY].parentX + "," + graph[currentX, currentY].parentY + ")-> ");
                 }
             }
             catch (IndexOutOfRangeException)
@@ -290,6 +289,7 @@ namespace TankSmashXNA
 
         private void resetGraph()
         {
+            // assign minus values for parents of each node to avoide infinite loop in traceback method
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)

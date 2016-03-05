@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using TankSmashXNA.Entity;
+using System.Threading;
 
 namespace TankSmashXNA
 {
@@ -19,6 +20,10 @@ namespace TankSmashXNA
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Texture2D logo;
+        Texture2D btnJoin;
+        Texture2D messageBox;
+        Texture2D backbtn;
         Texture2D gridTexture;
         Texture2D brick100Texture;
         Texture2D brick75Texture;
@@ -31,13 +36,20 @@ namespace TankSmashXNA
         Texture2D coinPackTexture;
         Texture2D upBulletTexture, downBulletTexture,leftBulletTexture, rightBulletTexture;
         Texture2D groundTexture;
-        Texture2D Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture;
-        Texture2D Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture;
-        Texture2D Tank1STexture,Tank2STexture, Tank3STexture, Tank4STexture;
-        Texture2D Tank1NTexture,Tank2NTexture, Tank3NTexture, Tank4NTexture;
+        Texture2D Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture, Tank5ETexture;
+        Texture2D Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture, Tank5WTexture;
+        Texture2D Tank1STexture, Tank2STexture, Tank3STexture, Tank4STexture, Tank5STexture;
+        Texture2D Tank1NTexture, Tank2NTexture, Tank3NTexture, Tank4NTexture, Tank5NTexture;
+        SpriteFont font;
+        SpriteFont menuFont;
+        SoundEffect click;
+
         Texture2D[,] tankTexture;
         GameEngine gameEngine;
-
+        public static GameState currentState = GameState.menu;
+        private int counter = 0;
+        private String IP = "_";
+        public static String message;
 
         public Game1()
         {
@@ -58,6 +70,7 @@ namespace TankSmashXNA
             graphics.PreferredBackBufferHeight = 550;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
+            this.IsMouseVisible = true;
             Window.Title = "Tank Game - Client";
             gameEngine =GameEngine.GetInstance();
             base.Initialize();
@@ -71,6 +84,10 @@ namespace TankSmashXNA
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            logo = Content.Load<Texture2D>("logo");
+            btnJoin = Content.Load<Texture2D>("btnJoin");
+            messageBox = Content.Load<Texture2D>("msgBox");
+            backbtn = Content.Load<Texture2D>("back");
             gridTexture = Content.Load<Texture2D>("square");
             brick100Texture = Content.Load<Texture2D>("brick100");
             brick75Texture = Content.Load<Texture2D>("brick75");
@@ -101,8 +118,14 @@ namespace TankSmashXNA
             Tank4WTexture = Content.Load<Texture2D>("Tank4W");
             Tank4STexture = Content.Load<Texture2D>("Tank4S");
             Tank4NTexture = Content.Load<Texture2D>("Tank4N");
-            tankTexture = new Texture2D[,] {{ Tank1NTexture, Tank2NTexture, Tank3NTexture, Tank4NTexture }, { Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture }, { Tank1STexture, Tank2STexture, Tank3STexture, Tank4STexture }, { Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture }  };
-
+            Tank5ETexture = Content.Load<Texture2D>("Tank5E");
+            Tank5WTexture = Content.Load<Texture2D>("Tank5W");
+            Tank5STexture = Content.Load<Texture2D>("Tank5S");
+            Tank5NTexture = Content.Load<Texture2D>("Tank5N");
+            tankTexture = new Texture2D[,] {{ Tank1NTexture, Tank2NTexture, Tank3NTexture, Tank4NTexture, Tank5NTexture }, { Tank1ETexture, Tank2ETexture, Tank3ETexture, Tank4ETexture, Tank5ETexture }, { Tank1STexture, Tank2STexture, Tank3STexture, Tank4STexture, Tank5STexture }, { Tank1WTexture, Tank2WTexture, Tank3WTexture, Tank4WTexture, Tank5WTexture } };
+            font = Content.Load<SpriteFont>("myFont");
+            menuFont = Content.Load<SpriteFont>("menuFont");
+            click = Content.Load<SoundEffect>("Click");
             // TODO: use this.Content to load your game content here
         }
 
@@ -127,7 +150,30 @@ namespace TankSmashXNA
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            if (currentState == GameState.menu)
+            {
+                counter++;
+                if (counter > 6)
+                {
+                    if (IP.Length > 0 && IP[IP.Length - 1].Equals('_'))
+                    {
+                        IP = IP.Substring(0, IP.Length - 1);
+                    }
+                    else
+                    {
+                        IP += "_";
+                    }
+                    counter = 0;
+                    processKeyboard();
+                    processMouse();
+                }
+            }
+            else if (currentState == GameState.CannotJoin)
+            {
+                counter++;
+                if(counter>6)
+                    processMouse();
+            }
             base.Update(gameTime);
         }
 
@@ -141,16 +187,37 @@ namespace TankSmashXNA
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            DrawBackground();
-            DrawBrick();
-            DrawWater();
-           
-            DrawLifePack();
-            DrawStone();
-            DrawCoinPack();
-            
-            DrawBullet();
-            DrawTank();
+            switch (currentState)
+            {
+                case GameState.menu:
+                    DrawMenu();
+                    break;
+                case GameState.joining:
+                    DrawMenu();
+                    DrawMessageBox();
+                    break;
+                case GameState.CannotJoin:
+                    DrawMenu();
+                    DrawMessageBox();
+                    break;
+                case GameState.playing:
+                    try
+                    {
+                        DrawBackground();
+                        DrawBrick();
+                        DrawWater();
+                        DrawLifePack();
+                        DrawStone();
+                        DrawCoinPack();
+                        DrawBullet();
+                        DrawTank();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    break;
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -166,8 +233,8 @@ namespace TankSmashXNA
                     Rectangle screenRectangle = new Rectangle(54*i+5,54*j+5, 50,50);
                     spriteBatch.Draw(gridTexture, screenRectangle, Color.White);
                 }
-             }
-            
+            }
+            spriteBatch.Draw(logo, new Rectangle(650,5,200,85), Color.White);
         }
 
         private void DrawBrick()
@@ -211,6 +278,7 @@ namespace TankSmashXNA
         {
             int i = 0;
             List<Tank> tankList = gameEngine.Tanks;
+            spriteBatch.DrawString(font, "I am Player " +gameEngine.getMyTankIndex(), new Vector2(660, 100), Color.Red);
             foreach (Tank item in tankList)
             {
                 if (item.Health > 0)
@@ -218,8 +286,12 @@ namespace TankSmashXNA
                     Rectangle tankRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
                     spriteBatch.Draw(tankTexture[item.Direction, item.getIndex()], tankRectangle, Color.White);
                 }
-                Rectangle tankRect = new Rectangle(600, 50*i+10, 50, 50);
+                Rectangle tankRect = new Rectangle(600, 85*i+120, 50, 50);
                 spriteBatch.Draw(tankTexture[0, item.getIndex()], tankRect, Color.White);
+                spriteBatch.DrawString(font, "Player " + item.getIndex(), new Vector2(660, 85 * i + 120), Color.White);
+                spriteBatch.DrawString(font, "Coins : " + item.Coins, new Vector2(660, 85 * i + 140), Color.White);
+                spriteBatch.DrawString(font, "Points: " + item.Points, new Vector2(660, 85 * i + 160), Color.White);
+                drawHealthBar(item.Health, i);
                 i++;
             }
         }
@@ -229,11 +301,8 @@ namespace TankSmashXNA
             List<LifePack> lifePackList = gameEngine.LifePacks;
             foreach (LifePack item in lifePackList)
             {
-                if (item != null)
-                {
-                    Rectangle lifePackRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
-                    spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);  
-                }
+                Rectangle lifePackRectangle = new Rectangle(item.X * 54 + 5, item.Y * 54 + 5, 50, 50);
+                spriteBatch.Draw(lifePackTexture, lifePackRectangle, Color.White);  
             }
         }
 
@@ -253,11 +322,9 @@ namespace TankSmashXNA
             List<CoinPack> coinList = gameEngine.CoinPacks;
             foreach (CoinPack coin in coinList)
             {
-                if (coin != null)
-                {
-                    Rectangle coinRectangle = new Rectangle(coin.X * 54 + 5, coin.Y * 54 + 5, 50, 50);
-                    spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
-                }
+                Rectangle coinRectangle = new Rectangle(coin.X * 54 + 5, coin.Y * 54 + 5, 50, 50);
+                spriteBatch.Draw(coinPackTexture, coinRectangle, Color.White);
+                spriteBatch.DrawString(font, coin.Amount.ToString(), new Vector2(coin.X * 54 + 10, coin.Y * 54 + 20), Color.Black);
             }
         }
 
@@ -284,8 +351,170 @@ namespace TankSmashXNA
 
                 }
             }
-            /*Rectangle bulletRectangle = new Rectangle(491, 491, 50, 50);
-            spriteBatch.Draw(bulletTexture, bulletRectangle, Color.White);*/
+        }
+
+        private void drawHealthBar(int health,int index)
+        {
+            Texture2D outerRect = getPlainRectangleTexture(100, 20, Color.White);
+            spriteBatch.Draw(outerRect, new Vector2(660, 85*index+180), Color.White);
+            if (health > 0)
+            {
+                if (health <= 20)
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(health, 20, Color.Red);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+                else if (health <= 40)
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(health, 20, Color.OrangeRed);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+                else if (health <= 60)
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(health, 20, Color.Orange);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+                else if (health <= 80)
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(health, 20, Color.YellowGreen);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+                else if (health <= 100)
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(health, 20, Color.Green);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+                else
+                {
+                    Texture2D innerRect = getPlainRectangleTexture(100, 20, Color.Green);
+                    spriteBatch.Draw(innerRect, new Vector2(660, 85 * index + 180), Color.White);
+                }
+            }
+            spriteBatch.DrawString(font, health.ToString(), new Vector2(720, 85 * index + 180),Color.Black);
+        }
+
+        private void DrawMenu()
+        {
+            Rectangle rect = new Rectangle(0, 0, 900, 550);
+            spriteBatch.Draw(groundTexture, rect, Color.White);
+            rect.X = 500;
+            rect.Y = 20;
+            rect.Width = 300;
+            rect.Height = 100;
+            spriteBatch.Draw(logo, rect, Color.White);
+            spriteBatch.Draw(getPlainRectangleTexture(250, 55, Color.White),new Vector2(135,75),Color.White);
+            spriteBatch.DrawString(font, "IP Address :", new Vector2(20, 90), Color.White);
+            spriteBatch.DrawString(menuFont, IP, new Vector2(145,85), Color.Black);
+            spriteBatch.Draw(btnJoin, new Rectangle(185, 145, 150, 75),Color.White);
+        }
+
+        private void DrawMessageBox()
+        {
+            Rectangle rect = new Rectangle(300,250,300,150);
+            spriteBatch.Draw(messageBox,rect,Color.White);
+            spriteBatch.DrawString(font, message, new Vector2(320,290), Color.Black);
+            if (currentState == GameState.CannotJoin)
+            {
+                spriteBatch.Draw(backbtn, new Rectangle(425, 340, 50, 50), Color.White);
+            }
+        }
+
+        private Texture2D getPlainRectangleTexture(int width, int height, Color colour)
+        {
+            Texture2D texture = new Texture2D(graphics.GraphicsDevice, width, height);
+            Color[] data = new Color[width * height];
+            for (int i = 0; i < data.Length; ++i) data[i] = colour;
+            texture.SetData(data);
+            return texture;
+        }
+
+        public enum GameState
+        {
+            menu,
+            playing,
+            joining,
+            CannotJoin,
+            End
+        }
+
+        private void processKeyboard()
+        {
+            KeyboardState keybState = Keyboard.GetState();
+            Keys[] pressedkeys = keybState.GetPressedKeys();
+            bool isDigit = pressedkeys.Any(key => key >= Keys.D0 && key <= Keys.D9 || key >= Keys.NumPad0 && key <= Keys.NumPad9);
+            if (isDigit)
+            {
+                String pressed = pressedkeys[0].ToString();
+                if (IP.Length > 0 && IP[IP.Length - 1].Equals('_'))
+                {
+                    IP = IP.Insert(IP.Length - 1, pressed[pressed.Length - 1].ToString());
+                }
+                else
+                {
+                    IP += pressed[pressed.Length - 1];
+                }
+            }
+            else if (keybState.IsKeyDown(Keys.OemPeriod) || keybState.IsKeyDown(Keys.Decimal))
+            {
+                if (IP.Length > 0 && IP[IP.Length - 1].Equals('_'))
+                {
+                    IP = IP.Insert(IP.Length - 1, ".");
+                }
+                else
+                {
+                    IP += ".";
+                }
+            }
+            else if (keybState.IsKeyDown(Keys.Back))
+            {
+                if (IP.Length > 1)
+                {
+                    if (IP[IP.Length - 1].Equals('_'))
+                    {
+                        IP = IP.Remove(IP.Length - 2, 1);
+                    }
+                    else
+                    {
+                        IP = IP.Substring(0, IP.Length - 1);
+                    }
+                }
+            }
+        }
+
+        private void processMouse()
+        {
+            MouseState mouse = Mouse.GetState();
+            switch (currentState)
+            {
+                case GameState.menu:
+                    if (mouse.LeftButton == ButtonState.Pressed)
+                    {
+                        Rectangle pointer = new Rectangle(mouse.X, mouse.Y, 1, 1);
+                        if (pointer.Intersects(new Rectangle(185, 145, 150, 75)))
+                        {
+                            click.Play();
+                            NetworkHandler netHandler = NetworkHandler.getInstance();
+                            Thread thread = new Thread(new ThreadStart(netHandler.StartListerner));
+                            thread.Start();
+                            currentState = GameState.joining;
+                            netHandler.setIP(IP);
+                            message = "Connecting to Server...";
+                            netHandler.Send("JOIN#");
+                        }
+                    }
+                    break;
+                case GameState.CannotJoin:
+                    if (mouse.LeftButton == ButtonState.Pressed)
+                    {
+                        Rectangle pointer = new Rectangle(mouse.X, mouse.Y, 1, 1);
+                        if (pointer.Intersects(new Rectangle(425, 340, 50, 50)))
+                        {
+                            click.Play();
+                            currentState = GameState.menu;
+                        }
+                    }
+                    break;
+            }
         }
 
     }

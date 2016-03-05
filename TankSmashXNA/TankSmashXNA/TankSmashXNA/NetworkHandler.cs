@@ -19,6 +19,8 @@ namespace TankSmashXNA
         private BinaryWriter writer;
         private TcpListener reciever;
         private NetworkStream recieveStream;
+        private String IP;
+        private bool isListening = false;
 
         private NetworkHandler(){
             gameEngine = GameEngine.GetInstance();
@@ -34,7 +36,7 @@ namespace TankSmashXNA
             try
             {
                 sender = new TcpClient();
-                sender.Connect("127.0.0.1", 6000);
+                sender.Connect(IP, 6000);
                 if (sender.Connected)
                 {
                     sendStream = sender.GetStream();
@@ -48,6 +50,11 @@ namespace TankSmashXNA
             }
             catch (Exception e)
             {
+                if (message.Equals("JOIN#"))
+                {
+                    Game1.currentState = Game1.GameState.CannotJoin;
+                    Game1.message = "Network Error!";
+                }
                 Console.WriteLine(e.Message);
             }
             finally
@@ -62,9 +69,7 @@ namespace TankSmashXNA
             bool error = false;
             try
             {
-                reciever = new TcpListener(IPAddress.Parse("127.0.0.1"), 7000);
-                reciever.Start();
-                while (true)
+                while (Game1.currentState==Game1.GameState.playing || Game1.currentState==Game1.GameState.joining)
                 {
                     socket = reciever.AcceptSocket();
                     if (socket.Connected)
@@ -97,9 +102,41 @@ namespace TankSmashXNA
                     if (socket.Connected)
                         socket.Close();
                 }
-                if (error)
+                if (error && (Game1.currentState == Game1.GameState.playing || Game1.currentState == Game1.GameState.joining))
                     Recieve();
             }
+            Console.WriteLine("Thread Finished");
+        }
+
+        public void StartListerner()
+        {
+            Console.WriteLine("Listener Thread Started");
+            if (!isListening)
+            {
+                try
+                {
+                    reciever = new TcpListener(IPAddress.Any, 7000);
+                    reciever.Start();
+                    isListening = true;
+                    Recieve();
+                    reciever.Stop();
+                    isListening = false;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    isListening = false;
+                }
+            }
+            Console.WriteLine("Listener Thread Ended");
+        }
+
+        public void setIP(String IPaddress)
+        {
+            if (IPaddress.Length > 0 && IPaddress[IPaddress.Length - 1].Equals("_"))
+                IPaddress = IPaddress.Substring(0, IPaddress.Length - 1);
+            Console.WriteLine(IPaddress);
+            this.IP = IPaddress;
         }
 
     }

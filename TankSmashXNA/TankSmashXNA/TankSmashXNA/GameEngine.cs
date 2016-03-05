@@ -57,6 +57,11 @@ namespace TankSmashXNA
             get { return bulletList; }
         }
 
+        public int getMyTankIndex()
+        {
+            return myTankIndex;
+        }
+
         private GameEngine()
         {
             tankList = new List<Tank>();
@@ -98,6 +103,26 @@ namespace TankSmashXNA
             {
                 HandleLifePack(msg.Substring(2, msg.Length - 2 - LINE_FEED_LENGTH));
             }
+            else if (msg.StartsWith("GAME_ALREADY_STARTED"))
+            {
+                Game1.currentState = Game1.GameState.CannotJoin;
+                Game1.message = "Game has already started";
+            }
+            else if (msg.StartsWith("PLAYERS_FULL"))
+            {
+                Game1.currentState = Game1.GameState.CannotJoin;
+                Game1.message = "Players full";
+            }
+            else if (msg.StartsWith("GAME_FINISHED"))
+            {
+                Game1.currentState = Game1.GameState.End;
+                Game1.message = "Game Finished";
+            }
+            else if (msg.StartsWith("ALREADY_ADDED"))
+            {
+                Game1.currentState = Game1.GameState.CannotJoin;
+                Game1.message = "You have already added";
+            }
         }
 
         private void InitializeMap(String message)
@@ -126,6 +151,8 @@ namespace TankSmashXNA
                 waterPitList.Add(waterPit);
                 map[waterPit.X, waterPit.Y] = waterPit;
             }
+            printMap();
+            Game1.currentState = Game1.GameState.playing;
         }
 
         private void InitializeTanks(String message)
@@ -185,12 +212,12 @@ namespace TankSmashXNA
                         life.RunningThread.Interrupt();
                     }
                 }
-                if (previousHealth > 0 && tank.Health == 0)
+                if (previousHealth > 0 && tank.Health == 0 && tank.Coins>0)
                 {
                     // When above 2 conditions becomes true the tank has just died. So remove the tank from map and spawn a coinpack
                     Console.WriteLine("tank "+tank.getIndex()+" just died");
                     map[tank.X, tank.Y] = null;
-                    CoinPack coin = new CoinPack(tank.X, tank.Y, tank.Coins, 0, coinPackList,collectabilities);
+                    CoinPack coin = new CoinPack(tank.X, tank.Y, tank.Coins, System.Threading.Timeout.Infinite, coinPackList, collectabilities);
                     coinPackList.Add(coin);
                     collectabilities[coin.X, coin.Y] = coin;
                     Thread thread = new Thread(new ThreadStart(coin.StartTimer));
@@ -232,6 +259,33 @@ namespace TankSmashXNA
             Thread thread = new Thread(new ThreadStart(life.StartTimer));
             life.RunningThread = thread;
             thread.Start();
+        }
+
+        private void printMap()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (map[i,j] == null)
+                    {
+                        Console.Write("N ");
+                    }
+                    else if (map[i, j].GetType() == typeof(Brick))
+                    {
+                        Console.Write("B ");
+                    }
+                    else if (map[i, j].GetType() == typeof(WaterPit))
+                    {
+                        Console.Write("W ");
+                    }
+                    else if (map[i, j].GetType() == typeof(Stone))
+                    {
+                        Console.Write("S ");
+                    }
+                }
+                Console.WriteLine("");
+            }
         }
 
     }
