@@ -59,14 +59,12 @@ author: bootply.com
 
             @media (min-width: 979px) {
                 #sidebar.affix-top {
-                    background-color:rgba(0,0,0,0.7);
                     position: static;
                     margin-top:30px;
                     width:228px;
                 }
 
                 #sidebar.affix {
-                    background-color:rgba(0,0,0,0.7);
                     position: fixed;
                     top:70px;
                     width:228px;
@@ -121,12 +119,11 @@ author: bootply.com
             <div class="row">
                 <!--left-->
                 <div class="col-md-3" id="leftCol">
-                    <ul class="nav nav-stacked" id="sidebar">
+                    <ul class="nav nav-stacked" id="sidebar" style="background-color:rgba(0,0,0,0.7);">
                         <li><a href="#sec0">Game Objective</a></li>
                         <li><a href="#sec1">Game World</a></li>
-                        <li><a href="#sec2">Section 2</a></li>
-                        <li><a href="#sec3">Section 3</a></li>
-                        <li><a href="#sec4">Section 4</a></li>
+                        <li><a href="#sec2">Collectabilities</a></li>
+                        <li><a href="#sec3">End of Game</a></li>
                     </ul>
                 </div><!--/left-->
 
@@ -141,7 +138,7 @@ author: bootply.com
                             <li>
                                 <h4>Brick Walls.</h4>
                                 <p>Damage is increased by 25% by each shot and will completely removed when damage is 100%. If a tank hit to a brick wall, 10
-                                    points will be reduced as penalty</p>
+                                    points will be reduced as penalty. Some amount of points can be gained by shooting to brick walls.</p>
                             </li>
                             <li>
                                 <h4>Stones</h4>
@@ -156,31 +153,18 @@ author: bootply.com
                         <ol>
                             <li>
                                 <h4>Coin Packs</h4>
-                                <p>Will spawn randomely at random locations with a random amount. The player who collects a coin pack will be given the amount of coins in the coin pack and equal amount of points. </p>
+                                <p>Will spawn randomely at random locations with a random amount. The player who collects a coin pack will be given the amount of coins in the coin pack and equal amount of points. Once a coin pack is spawned it will be availabe for a random amount of time. When a tank is dead, a coin pack with the amount of coins that tank has collected will be spawn at that location. It will be available until another tank collects it.</p>
+                            </li>
+                            <li>
+                                <h4>Life Packs</h4>
+                                <p>Life Packs will too spawn randomely. They will also be avilable for a random period. Collecting a life pack will increase the health by 10 units.</p>
                             </li>
                         </ol>
-                    <h2 id="sec3">Section 3</h2>
-                    <!--p>
-                      Images are responsive sed @mdo but sum are more fun peratis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
-                      totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae 
-                      dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia cor magni dolores 
-                      eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, 
-                      sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. 
-                      Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut..</p>
-                    <p>
-                      Fos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, 
-                      sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. 
-                      Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut..</p-->
+                        <h2 id="sec3">End of Game</h2>
 
 
-                    <h2 id="sec4">Section 4</h2>
-                    <!--p>
-                      Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
-                      totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae 
-                      dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia cor magni dolores 
-                      eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, 
-                      sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. 
-                      Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut.</p-->
+                        <h2 id="sec4">Section 4</h2>
+                    
                       </div>
                     </div>
                 </div><!--/right-->
