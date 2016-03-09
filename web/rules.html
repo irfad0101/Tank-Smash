@@ -59,14 +59,14 @@ author: bootply.com
 
             @media (min-width: 979px) {
                 #sidebar.affix-top {
-                    background-color:rgba(0,0,0,0.5);
+                    background-color:rgba(0,0,0,0.7);
                     position: static;
                     margin-top:30px;
                     width:228px;
                 }
 
                 #sidebar.affix {
-                    background-color:rgba(0,0,0,0.5);
+                    background-color:rgba(0,0,0,0.7);
                     position: fixed;
                     top:70px;
                     width:228px;
@@ -132,23 +132,33 @@ author: bootply.com
 
                 <!--right-->
                 <div class="col-md-9">
-                    <h2 id="sec0">Game Objectives</h2>
-                    <p>Tank Smash is a multiplayer player game where at most 5 players can play at the same time. Objective of each player is to collect more and more points and coins while surviving throughout the gameplay. Although you can form alliances with other players, they are temporary. Ultimately you are on your own. The player who has collected most points and survived until the end is the winner.</p>
-                    <h2 id="sec1"> Game World</h2>
-                    <p>The game world is 10x10 grid.It mainly contains follwing objects</p>
-                    <ol>
-                        <li><h4>Brick Walls.</h4><!--p>When shot get damaged.</p--></li>
-                        <li><h4>Stones</h4></li>
-                        <li><h4>Water Pit</h4></li>
-                    </ol>
-                    <h2 id="sec2">Section 2</h2>
-                    <!--p>
-                      Rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae 
-                      dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia cor magni dolores 
-                      eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, 
-                      sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. 
-                      Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut!
-                    </p-->
+                    <div style="background-color:rgba(0,0,0,0.7);">
+                        <h2 id="sec0">Game Objectives</h2>
+                        <p>Tank Smash is a multiplayer player game where at most 5 players can play at the same time. Objective of each player is to collect points and coins as much as possible while surviving throughout the gameplay. Although you can form alliances with other players, they are temporary. Ultimately you are on your own. The player who has collected most points and survived until the end is the winner.</p>
+                        <h2 id="sec1"> Game World</h2>
+                        <p>The game world is 10x10 grid.It mainly contains follwing objects</p>
+                        <ol>
+                            <li>
+                                <h4>Brick Walls.</h4>
+                                <p>Damage is increased by 25% by each shot and will completely removed when damage is 100%. If a tank hit to a brick wall, 10
+                                    points will be reduced as penalty</p>
+                            </li>
+                            <li>
+                                <h4>Stones</h4>
+                                <p>Cannot be damaged by any means. Points will be reduced when a tank collide with stone.</p>
+                            </li>
+                            <li>
+                                <h4>Water Pit</h4>
+                                <p>A tank will be eliminated immediately, if it drive towards a water pit.</p>
+                            </li>
+                        </ol>
+                        <h2 id="sec2">Collectabilities</h2>
+                        <ol>
+                            <li>
+                                <h4>Coin Packs</h4>
+                                <p>Will spawn randomely at random locations with a random amount. The player who collects a coin pack will be given the amount of coins in the coin pack and equal amount of points. </p>
+                            </li>
+                        </ol>
                     <h2 id="sec3">Section 3</h2>
                     <!--p>
                       Images are responsive sed @mdo but sum are more fun peratis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
@@ -171,6 +181,8 @@ author: bootply.com
                       eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, 
                       sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. 
                       Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut.</p-->
+                      </div>
+                    </div>
                 </div><!--/right-->
             </div><!--/row-->
         </div><!--/container-->
