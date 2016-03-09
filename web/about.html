@@ -16,6 +16,58 @@
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style type="text/css">
+            /*
+            A Bootstrap 3.1 affix sidebar template
+            from http://bootply.com
+
+            license: MIT
+            author: bootply.com
+                        */
+            #masthead { 
+                min-height:100px;
+            }
+
+            #masthead h1 {
+                font-size: 30px;
+                line-height: 1;
+                padding-top:20px;
+            }
+
+            #masthead .well {
+                margin-top:8%;
+            }
+
+            @media screen and (min-width: 768px) {
+                #masthead h1 {
+                    font-size: 50px;
+                }
+            }
+
+            .affix-top,.affix{
+                position: static;
+            }
+
+            @media (min-width: 979px) {
+                #sidebar.affix-top {
+                    position: static;
+                    margin-top:30px;
+                    width:228px;
+                }
+
+                #sidebar.affix {
+                    position: fixed;
+                    top:70px;
+                    width:228px;
+                }
+            }
+
+            #sidebar li.active {
+                border:0 #eee solid;
+                border-right-width:5px;
+            }
+
+        </style>
     </head>
     <body>
         <!-- Navigation Bar -->
@@ -43,9 +95,38 @@
             </div>
         </div>
         <!-- End of Navigation Bar -->
+        <div id="masthead">
+            <div class="col-md-6 col-md-offset-1">
+                <h2>About</h2>
+            </div>
+        </div><!--/masthead-->
+
+        <!--main-->
         <div class="container">
-            <h1>About</h1>
-        </div>
+            <div class="row">
+                <!--left-->
+                <div class="col-md-3" id="leftCol">
+                    <ul class="nav nav-stacked" id="sidebar" style="background-color:rgba(0,0,0,0.7);">
+                        <li><a href="#sec0">Developers</a></li>
+                        <li><a href="#sec1">Programming Challenge II</a></li>
+                        <li><a href="#sec2">AI</a></li>
+                    </ul>
+                </div><!--/left-->
+                <!--right-->
+                <div class="col-md-9">
+                    <div style="background-color:rgba(0,0,0,0.7);">
+                        <div style="padding: 10px;">
+                            <h2 id="sec0">Developers</h2>
+                            <p> M. A. I. Hussain    S.S.Samarasinghe</p>
+                            <h2 id="sec1">Programming Challenge II<</h2>
+                            <p>Semester 4 module</p>
+                            <h2 id="sec2">AI</h2>
+                            <P>BFS</P>
+                        </div>
+                    </div>
+                </div><!--/right-->
+            </div><!--/row-->
+        </div><!--/container-->
         <!-- Footer -->
         <footer class="footer">
             <!--div class="navbar navbar-inverse navbar-bottom" role="navigation"-->
@@ -58,5 +139,42 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="js/bootstrap.min.js"></script>
+        <script type='text/javascript'>
+
+            $(document).ready(function () {
+
+                /* activate sidebar */
+                $('#sidebar').affix({
+                    offset: {
+                        top: 100
+                    }
+                });
+
+                /* activate scrollspy menu */
+                var $body = $(document.body);
+                var navHeight = $('.navbar').outerHeight(true) + 10;
+
+                $body.scrollspy({
+                    target: '#leftCol',
+                    offset: navHeight
+                });
+
+                /* smooth scrolling sections */
+                $('a[href*=#]:not([href=#])').click(function () {
+                    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+                        var target = $(this.hash);
+                        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                        if (target.length) {
+                            $('html,body').animate({
+                                scrollTop: target.offset().top - 50
+                            }, 1000);
+                            return false;
+                        }
+                    }
+                });
+
+            });
+
+        </script>        
     </body>
 </html>
