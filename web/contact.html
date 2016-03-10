@@ -80,8 +80,23 @@
                   var x2 = Math.floor((Math.random() * 10) + 1);
                   document.getElementById("num1").value = x1;
                   document.getElementById("num2").value = x2;
-                  document.getElementById("humanTest").innerHTML = x1 + " + " + x2 + " = ?";com
+                  document.getElementById("humanTest").innerHTML = x1 + " + " + x2 + " = ?";
+                  var success = getParameterByName("success");
+                  if(success){
+                    alert("Your message sent. Thank you for your concern.");
+                  }
+                  function getParameterByName(name, url) {
+                    if (!url) url = window.location.href;
+                    url = url.toLowerCase(); // This is just to avoid case sensitiveness  
+                    name = name.replace(/[\[\]]/g, "\\$&");
+                    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                    if (!results) return null;
+                    if (!results[2]) return '';
+                    return decodeURIComponent(results[2].replace(/\+/g, " "));
+                }
                 </script>
+                <input type="hidden" name="_next" value="http://irfad0101.github.io/Tank-Smash/web/contact.html?success=true" />
                 <div class="form-group">
                     <div class="col-sm-10 col-sm-offset-2">
                         <input id="submit" name="submit" type="submit" value="Send" class="btn btn-primary">
